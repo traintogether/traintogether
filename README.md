@@ -12,7 +12,6 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
   * [ ] User is displayed the statistics for each session and is provided with visualizations for group as well as individual statistics
   * [ ] User can **unlock new achievements**
 * [ ]	User can **view profile and update preferences**
-* [ ]	User can **invite friends and join events to train together**
 * [ ]	User can **chat with other people in the group**
 * [ ]	User can **view the leaderboard**
 * [ ]	User can **start a run** and see current run map along with statistics
@@ -23,6 +22,7 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 * [ ] User is displayed the provided with a training schedule and can modify as per preference
 * [ ] User get notification on runs based on training schedules
 * [ ]	User can **view previous runs on Google Maps**
+* [ ]	User can **invite friends and join events to train together**
 * [ ]	User can **track current run on google maps**
 * [ ]	User can **view personal statistics**
 * [ ]	Users are **provided reminders about upcoming events**
