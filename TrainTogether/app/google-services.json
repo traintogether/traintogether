@@ -1,0 +1,50 @@
+{
+  "project_info": {
+    "project_number": "643356313099",
+    "firebase_url": "https://train-together-deb4e.firebaseio.com",
+    "project_id": "train-together-deb4e",
+    "storage_bucket": "train-together-deb4e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643356313099:android:62cdabd804969d23",
+        "android_client_info": {
+          "package_name": "com.codepath.traintogether"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643356313099-rlpcsdcu038fv8epbs9qmkv46v99ql9t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codepath.traintogether",
+            "certificate_hash": "B5A9DAADF8C2B057BA3C702B58F9E638DE0843FC"
+          }
+        },
+        {
+          "client_id": "643356313099-ckp21m5thg73lm771cvfe21vetm55hpq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyK2iYheF8A8XvvF0XG3G6oWqnDBBI57w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
