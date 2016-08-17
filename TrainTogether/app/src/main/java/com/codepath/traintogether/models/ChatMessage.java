@@ -1,4 +1,4 @@
-package com.codepath.traintogether;
+package com.codepath.traintogether.models;
 
 /**
  * Created by ameyapandilwar on 8/17/16

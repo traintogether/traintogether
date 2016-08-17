@@ -1,10 +1,10 @@
-package com.codepath.traintogether;
+package com.codepath.traintogether.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,11 +23,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.traintogether.Constants;
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.models.ChatMessage;
+import com.codepath.traintogether.utils.ItemSpaceDecoration;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.appinvite.AppInviteInvitation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,12 +41,16 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by ameyapandilwar on 8/17/16
  */
 public class ChatActivity extends AppCompatActivity {
+
+    private static final String TAG = "ChatActivity";
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
         public TextView messageTextView;
@@ -59,52 +65,89 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private static final int ONE_HOUR = 3600;
-    private static final String TAG = "ChatActivity";
-    public static final String MESSAGES_CHILD = "messages";
-    private static final int REQUEST_INVITE = 1;
-    public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
-    public static final String ANONYMOUS = "anonymous";
     private String mUsername;
     private String mPhotoUrl;
     private SharedPreferences mSharedPreferences;
 
-    private Button mSendButton;
-    private RecyclerView mMessageRecyclerView;
+    @BindView(R.id.btnSend)
+    Button btnSend;
+    @BindView(R.id.rvMessages)
+    RecyclerView rvMessages;
+    @BindView(R.id.pbLoading)
+    ProgressBar pbLoading;
+    @BindView(R.id.etMessage)
+    EditText etMessage;
+
     private LinearLayoutManager mLinearLayoutManager;
     private FirebaseRecyclerAdapter<ChatMessage, MessageViewHolder> mFirebaseAdapter;
-    private ProgressBar mProgressBar;
     private DatabaseReference mFirebaseDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
-    private EditText mMessageEditText;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        ButterKnife.bind(this);
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mUsername = ANONYMOUS;
+        mUsername = Constants.ANONYMOUS;
 
         initializeFirebase();
 
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mMessageRecyclerView = (RecyclerView) findViewById(R.id.messageRecyclerView);
+        setupDisplayMessages();
+
+        defineFirebaseRemoteConfigSettings();
+
+        fetchRemoteConfig();
+
+        applyFilters();
+
+        btnSend.setOnClickListener(view -> {
+            ChatMessage message = new ChatMessage(etMessage.getText().toString(), mUsername, mPhotoUrl);
+            mFirebaseDatabaseReference.child(Constants.MESSAGES_CHILD).push().setValue(message);
+            etMessage.setText("");
+        });
+    }
+
+    private void applyFilters() {
+        etMessage.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mSharedPreferences
+                .getInt(Constants.FRIENDLY_MSG_LENGTH, Constants.DEFAULT_MSG_LENGTH_LIMIT))});
+        etMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.toString().trim().length() > 0) {
+                    btnSend.setEnabled(true);
+                } else {
+                    btnSend.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+    }
+
+    private void setupDisplayMessages() {
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
 
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mFirebaseAdapter = new FirebaseRecyclerAdapter<ChatMessage, MessageViewHolder>(
-                        ChatMessage.class,
-                        R.layout.item_message,
-                        MessageViewHolder.class,
-                        mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
+                ChatMessage.class,
+                R.layout.item_message,
+                MessageViewHolder.class,
+                mFirebaseDatabaseReference.child(Constants.MESSAGES_CHILD)) {
 
             @Override
             protected void populateViewHolder(MessageViewHolder viewHolder, ChatMessage chatMessage, int position) {
-                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                pbLoading.setVisibility(ProgressBar.INVISIBLE);
                 viewHolder.messageTextView.setText(chatMessage.getText());
                 viewHolder.messengerTextView.setText(chatMessage.getName());
                 if (chatMessage.getPhotoUrl() == null) {
@@ -126,62 +169,26 @@ public class ChatActivity extends AppCompatActivity {
                 int lastVisiblePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
                 if (lastVisiblePosition == -1 ||
                         (positionStart >= (friendlyMessageCount - 1) && lastVisiblePosition == (positionStart - 1))) {
-                    mMessageRecyclerView.scrollToPosition(positionStart);
+                    rvMessages.scrollToPosition(positionStart);
                 }
             }
         });
 
-        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
-
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-
-        defineFirebaseRemoteConfigSettings();
-
-        fetchRemoteConfig();
-
-        mMessageEditText = (EditText) findViewById(R.id.messageEditText);
-        mMessageEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mSharedPreferences
-                .getInt(Constants.FRIENDLY_MSG_LENGTH, DEFAULT_MSG_LENGTH_LIMIT))});
-        mMessageEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().trim().length() > 0) {
-                    mSendButton.setEnabled(true);
-                } else {
-                    mSendButton.setEnabled(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-
-        mSendButton = (Button) findViewById(R.id.sendButton);
-        mSendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ChatMessage chatMessage = new ChatMessage(mMessageEditText.getText().toString(), mUsername,
-                        mPhotoUrl);
-                mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(chatMessage);
-                mMessageEditText.setText("");
-            }
-        });
+        rvMessages.setLayoutManager(mLinearLayoutManager);
+        rvMessages.setAdapter(mFirebaseAdapter);
+        rvMessages.addItemDecoration(new ItemSpaceDecoration(5));
     }
 
     private void defineFirebaseRemoteConfigSettings() {
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
         FirebaseRemoteConfigSettings firebaseRemoteConfigSettings =
                 new FirebaseRemoteConfigSettings.Builder()
                         .setDeveloperModeEnabled(true)
                         .build();
 
         Map<String, Object> defaultConfigMap = new HashMap<>();
-        defaultConfigMap.put("friendly_msg_length", 10L);
+        defaultConfigMap.put(Constants.FRIENDLY_MSG_LENGTH, 10L);
 
         mFirebaseRemoteConfig.setConfigSettings(firebaseRemoteConfigSettings);
         mFirebaseRemoteConfig.setDefaults(defaultConfigMap);
@@ -196,7 +203,8 @@ public class ChatActivity extends AppCompatActivity {
             finish();
         } else {
             mUsername = mFirebaseUser.getDisplayName();
-            mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
+            Uri photoUrl = mFirebaseUser.getPhotoUrl();
+            mPhotoUrl = photoUrl != null ? photoUrl.toString() : "";
         }
     }
 
@@ -217,7 +225,7 @@ public class ChatActivity extends AppCompatActivity {
                 mFirebaseAuth.signOut();
                 LoginManager.getInstance().logOut();
                 mFirebaseUser = null;
-                mUsername = ANONYMOUS;
+                mUsername = Constants.ANONYMOUS;
                 mPhotoUrl = null;
                 startActivity(new Intent(this, FacebookLoginActivity.class));
                 return true;
@@ -234,28 +242,22 @@ public class ChatActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.invitation_message))
                 .setCallToActionText(getString(R.string.invitation_cta))
                 .build();
-        startActivityForResult(intent, REQUEST_INVITE);
+        startActivityForResult(intent, Constants.REQUEST_INVITE);
     }
 
     public void fetchRemoteConfig() {
-        long cacheExpiration = ONE_HOUR;
+        long cacheExpiration = Constants.ONE_HOUR;
         if (mFirebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
             cacheExpiration = 0;
         }
         mFirebaseRemoteConfig.fetch(cacheExpiration)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        mFirebaseRemoteConfig.activateFetched();
-                        applyRetrievedLengthLimit();
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    mFirebaseRemoteConfig.activateFetched();
+                    applyRetrievedLengthLimit();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error fetching config: " + e.getMessage());
-                        applyRetrievedLengthLimit();
-                    }
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error fetching config: " + e.getMessage());
+                    applyRetrievedLengthLimit();
                 });
     }
 
@@ -264,7 +266,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
 
-        if (requestCode == REQUEST_INVITE) {
+        if (requestCode == Constants.REQUEST_INVITE) {
             if (resultCode == RESULT_OK) {
                 Bundle payload = new Bundle();
                 payload.putString(FirebaseAnalytics.Param.VALUE, "inv_sent");
@@ -279,8 +281,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void applyRetrievedLengthLimit() {
-        Long friendly_msg_length = mFirebaseRemoteConfig.getLong("friendly_msg_length");
-        mMessageEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(friendly_msg_length.intValue())});
+        Long friendly_msg_length = mFirebaseRemoteConfig.getLong(Constants.FRIENDLY_MSG_LENGTH);
+        etMessage.setFilters(new InputFilter[]{new InputFilter.LengthFilter(friendly_msg_length.intValue())});
         Log.d(TAG, "FML is: " + friendly_msg_length);
     }
 

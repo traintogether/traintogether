@@ -41,6 +41,14 @@
             style="@style/ThemeOverlay.MyTextDetail"
             tools:text="Firebase User ID: 123456789abc" />
 
+        <Button
+            android:id="@+id/button_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chat"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
     <RelativeLayout

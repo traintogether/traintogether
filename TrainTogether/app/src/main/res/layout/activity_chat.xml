@@ -9,10 +9,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.codepath.traintogether.MainActivity">
+    tools:context=".activities.MainActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/messageRecyclerView"
+        android:id="@+id/rvMessages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout"
@@ -30,7 +30,7 @@
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/messageEditText"
+            android:id="@+id/etMessage"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"/>
 
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="SEND"
             android:enabled="false"
-            android:id="@+id/sendButton"
+            android:id="@+id/btnSend"
             android:layout_gravity="bottom"/>
 
     </LinearLayout>
@@ -48,7 +48,7 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
+        android:id="@+id/pbLoading"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>
 </RelativeLayout>

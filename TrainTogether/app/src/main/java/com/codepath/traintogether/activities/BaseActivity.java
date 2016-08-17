@@ -1,13 +1,17 @@
-package com.codepath.traintogether;
+package com.codepath.traintogether.activities;
 
 import android.app.ProgressDialog;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 
+import com.codepath.traintogether.R;
+
 /**
  * Created by ameyapandilwar on 8/17/16
  */
 public class BaseActivity extends AppCompatActivity {
+
+    private static final String TAG = "BaseActivity";
 
     @VisibleForTesting
     public ProgressDialog mProgressDialog;

@@ -1,13 +1,14 @@
-package com.codepath.traintogether;
+package com.codepath.traintogether.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codepath.traintogether.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -15,13 +16,13 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by ameyapandilwar on 8/17/16
@@ -30,8 +31,16 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
 
     private static final String TAG = "FacebookLoginActivity";
 
-    private TextView mStatusTextView;
-    private TextView mDetailTextView;
+    @BindView(R.id.status)
+    TextView mStatusTextView;
+    @BindView(R.id.detail)
+    TextView mDetailTextView;
+    @BindView(R.id.button_facebook_login)
+    LoginButton btnFacebookLogin;
+    @BindView(R.id.button_facebook_signout)
+    Button btnFacebookSignout;
+    @BindView(R.id.button_chat)
+    Button btnChat;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -43,24 +52,21 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_facebook_login);
+        ButterKnife.bind(this);
 
-        mStatusTextView = (TextView) findViewById(R.id.status);
-        mDetailTextView = (TextView) findViewById(R.id.detail);
-        findViewById(R.id.button_facebook_signout).setOnClickListener(this);
+        btnFacebookSignout.setOnClickListener(this);
+        btnChat.setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-                updateUI(user);
+        mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+            } else {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
             }
+            updateUI(user);
         };
 
         initializeFacebookLogin();
@@ -68,9 +74,8 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
 
     private void initializeFacebookLogin() {
         mCallbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = (LoginButton) findViewById(R.id.button_facebook_login);
-        loginButton.setReadPermissions("email", "public_profile");
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        btnFacebookLogin.setReadPermissions("email", "public_profile");
+        btnFacebookLogin.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
@@ -117,20 +122,17 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                .addOnCompleteListener(this, task -> {
+                    Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(FacebookLoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            startActivity(new Intent(FacebookLoginActivity.this, ChatActivity.class));
-                            hideProgressDialog();
-                            finish();
-                        }
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "signInWithCredential", task.getException());
+                        Toast.makeText(FacebookLoginActivity.this, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        startActivity(new Intent(FacebookLoginActivity.this, ChatActivity.class));
+                        hideProgressDialog();
+                        finish();
                     }
                 });
     }
@@ -146,14 +148,16 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
             mStatusTextView.setText(getString(R.string.facebook_status_fmt, user.getDisplayName()));
             mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
 
-            findViewById(R.id.button_facebook_login).setVisibility(View.GONE);
-            findViewById(R.id.button_facebook_signout).setVisibility(View.VISIBLE);
+            btnFacebookLogin.setVisibility(View.GONE);
+            btnFacebookSignout.setVisibility(View.VISIBLE);
+            btnChat.setVisibility(View.VISIBLE);
         } else {
             mStatusTextView.setText(R.string.signed_out);
             mDetailTextView.setText(null);
 
-            findViewById(R.id.button_facebook_login).setVisibility(View.VISIBLE);
-            findViewById(R.id.button_facebook_signout).setVisibility(View.GONE);
+            btnFacebookLogin.setVisibility(View.VISIBLE);
+            btnFacebookSignout.setVisibility(View.GONE);
+            btnChat.setVisibility(View.GONE);
         }
     }
 
@@ -162,6 +166,12 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
         int i = v.getId();
         if (i == R.id.button_facebook_signout) {
             signOut();
+        } else if (i == R.id.button_chat) {
+            navigateToChat();
         }
+    }
+
+    private void navigateToChat() {
+        startActivity(new Intent(this, ChatActivity.class));
     }
 }
