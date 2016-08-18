@@ -6,7 +6,7 @@ package com.codepath.traintogether.models.active;
 public class AssetPrice {
 
     private String effectiveFromVolume;
-    private Long priceAmt;
+    private double priceAmt;
     private Object maxPriceAmt;
     private Object effectiveUntilDate;
     private Object minPriceAmt;
@@ -37,7 +37,7 @@ public class AssetPrice {
      * @return
      * The priceAmt
      */
-    public Long getPriceAmt() {
+    public double getPriceAmt() {
         return priceAmt;
     }
 
@@ -46,7 +46,7 @@ public class AssetPrice {
      * @param priceAmt
      * The priceAmt
      */
-    public void setPriceAmt(Long priceAmt) {
+    public void setPriceAmt(double priceAmt) {
         this.priceAmt = priceAmt;
     }
 

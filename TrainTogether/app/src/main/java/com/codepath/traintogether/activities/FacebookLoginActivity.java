@@ -41,6 +41,8 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
     Button btnFacebookSignout;
     @BindView(R.id.button_chat)
     Button btnChat;
+    @BindView(R.id.button_feed)
+    Button btnFeed;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -56,6 +58,7 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
 
         btnFacebookSignout.setOnClickListener(this);
         btnChat.setOnClickListener(this);
+        btnFeed.setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -168,10 +171,16 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
             signOut();
         } else if (i == R.id.button_chat) {
             navigateToChat();
+        } else if (i == R.id.button_feed) {
+            navigateToFeed();
         }
     }
 
     private void navigateToChat() {
         startActivity(new Intent(this, ChatActivity.class));
+    }
+
+    private void navigateToFeed() {
+        startActivity(new Intent(this, FeedActivity.class));
     }
 }
