@@ -1,4 +1,6 @@
-package com.codepath.traintogether.models.active;
+package com.codepath.traintogether.utils.client;
+
+import com.codepath.traintogether.models.active.Result;
 
 import java.util.ArrayList;
 import java.util.List;

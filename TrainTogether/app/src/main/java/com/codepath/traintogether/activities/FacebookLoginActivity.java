@@ -181,6 +181,6 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
     }
 
     private void navigateToFeed() {
-        startActivity(new Intent(this, FeedActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

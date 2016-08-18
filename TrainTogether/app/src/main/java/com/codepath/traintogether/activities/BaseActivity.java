@@ -1,10 +1,13 @@
 package com.codepath.traintogether.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 
 import com.codepath.traintogether.R;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by ameyapandilwar on 8/17/16
@@ -36,6 +39,11 @@ public class BaseActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         hideProgressDialog();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 }

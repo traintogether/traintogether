@@ -1,4 +1,4 @@
-package com.codepath.traintogether;
+package com.codepath.traintogether.utils;
 
 /**
  * Created by ameyapandilwar on 8/17/16
@@ -17,4 +17,5 @@ public class Constants {
 
     public static final String API_ENDPOINT_URL = "http://api.amp.active.com/v2/search/";
 
+    public static final String DEFAULT_FONT_ASSET_PATH = "fonts/VesperLibre-Regular.ttf";
 }
