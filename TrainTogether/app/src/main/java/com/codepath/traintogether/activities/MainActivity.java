@@ -1,10 +1,11 @@
 package com.codepath.traintogether.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,10 +18,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.fragments.FeedFragment;
+import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
+import com.codepath.traintogether.models.FilterSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +30,15 @@ import java.util.List;
 /**
  * Created by ameyapandilwar on 8/17/16
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FilterSettingsDialogFragment.FilterSettingsDialogListener {
 
     private static final String TAG = "MainActivity";
 
     private DrawerLayout mDrawerLayout;
+
+    SharedPreferences preferences;
+
+    FeedFragment fragment = new FeedFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +65,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> showFilterSettingsDialog());
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        preferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -87,26 +89,28 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, FacebookLoginActivity.class));
                 break;
             case R.id.search:
+                refreshEvents();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void refreshEvents() {
+        fragment.refreshEvents();
+    }
+
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new FeedFragment(), "Feed");
+        adapter.addFragment(fragment, "Feed");
 //        adapter.addFragment(new FeedFragment(), "Category 2");
         viewPager.setAdapter(adapter);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
     }
 
@@ -123,6 +127,29 @@ public class MainActivity extends AppCompatActivity {
         }
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
+    }
+
+    private void showFilterSettingsDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        FilterSettingsDialogFragment filterSettingsDialogFragment = FilterSettingsDialogFragment.newInstance("");
+        filterSettingsDialogFragment.show(fm, "fragment_filter_settings");
+    }
+
+    @Override
+    public void onUpdateFilterSettings(FilterSettings settings) {
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putString("lat_lon", settings.getLatLon());
+        editor.putString("radius", settings.getRadius());
+        editor.putString("city", settings.getCity());
+        editor.putString("state", settings.getState());
+        editor.putString("zip", settings.getZip());
+        editor.putString("country", settings.getCountry());
+        editor.putString("start_date", settings.getStartDate());
+
+        editor.apply();
+
+        refreshEvents();
     }
 
     static class Adapter extends FragmentPagerAdapter {

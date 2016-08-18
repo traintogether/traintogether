@@ -21,4 +21,9 @@
     <string name="chat">Chat</string>
     <string name="title_activity_feed">FeedActivity</string>
     <string name="feed">Feed</string>
+
+    <string-array name="sort_order_values">
+        <item>Date Ascending</item>
+        <item>Date Descending</item>
+    </string-array>
 </resources>

@@ -1,6 +1,7 @@
 package com.codepath.traintogether.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,10 +13,10 @@ import android.widget.Toast;
 
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.adapters.EventsAdapter;
-import com.codepath.traintogether.models.active.ActiveRequest;
-import com.codepath.traintogether.models.active.ActiveResponse;
+import com.codepath.traintogether.utils.client.ActiveRequest;
+import com.codepath.traintogether.utils.client.ActiveResponse;
 import com.codepath.traintogether.models.active.Result;
-import com.codepath.traintogether.utils.ActiveClient;
+import com.codepath.traintogether.utils.client.ActiveClient;
 import com.codepath.traintogether.utils.ItemSpaceDecoration;
 import com.codepath.traintogether.utils.Utils;
 import com.google.gson.Gson;
@@ -49,6 +50,8 @@ public class FeedFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
+    SharedPreferences preferences;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,26 +60,14 @@ public class FeedFragment extends BaseFragment {
 
         setupViews(getContext());
 
-//        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
-//        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show());
-
-
         gson = Utils.getGsonInstance();
         client = new ActiveClient(getContext());
+
+        preferences = getContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
         loadEvents();
 
         return v;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_feed);
-//        ButterKnife.bind(this);
-
-
     }
 
     private void setupViews(Context context) {
@@ -90,8 +81,16 @@ public class FeedFragment extends BaseFragment {
     }
 
     private void loadEvents() {
-        ActiveRequest request = new ActiveRequest();
-        request.setQuery(query);
+        ActiveRequest request = new ActiveRequest(
+                query,
+                preferences.getString("lat_lon", ""),
+                preferences.getString("radius", ""),
+                preferences.getString("city", ""),
+                preferences.getString("state", ""),
+                preferences.getString("zip", ""),
+                preferences.getString("country", ""),
+                preferences.getString("start_date", "")
+        );
 
         client.loadEvents(request, new JsonHttpResponseHandler() {
             @Override
@@ -104,7 +103,11 @@ public class FeedFragment extends BaseFragment {
                 Toast.makeText(getContext(), "Problem Occurred. Try Later!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    public void refreshEvents() {
+        events.clear();
+        loadEvents();
     }
 
     private void loadResponseIntoFeed(String jsonResponse) {

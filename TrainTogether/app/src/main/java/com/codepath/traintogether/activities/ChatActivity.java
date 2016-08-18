@@ -22,7 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.traintogether.Constants;
+import com.codepath.traintogether.utils.Constants;
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.models.ChatMessage;
 import com.codepath.traintogether.utils.ItemSpaceDecoration;

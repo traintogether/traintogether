@@ -47,10 +47,6 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".activities.FacebookLoginActivity" />
         <activity android:name=".activities.ChatActivity" />
-        <activity
-            android:name=".activities.FeedActivity"
-            android:label="@string/title_activity_feed"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
