@@ -19,4 +19,6 @@
     <string name="facebook_status_fmt">Facebook User: %s</string>
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="chat">Chat</string>
+    <string name="title_activity_feed">FeedActivity</string>
+    <string name="feed">Feed</string>
 </resources>

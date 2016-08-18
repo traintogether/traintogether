@@ -15,6 +15,6 @@ public class Constants {
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
     public static final String ANONYMOUS = "anonymous";
 
-
+    public static final String API_ENDPOINT_URL = "http://api.amp.active.com/v2/search/";
 
 }
