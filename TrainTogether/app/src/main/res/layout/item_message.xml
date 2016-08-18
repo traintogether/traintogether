@@ -34,11 +34,13 @@
 
                 <TextView
                     android:id="@+id/messengerTextView"
+                    fontPath="fonts/VesperLibre-Bold.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    tools:ignore="MissingPrefix" />
 
                 <TextView
                     android:id="@+id/messageTextView"

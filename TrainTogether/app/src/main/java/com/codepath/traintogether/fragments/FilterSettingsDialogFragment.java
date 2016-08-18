@@ -12,13 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.codepath.traintogether.R;
-import com.codepath.traintogether.adapters.SpinnerAdapter;
 import com.codepath.traintogether.models.FilterSettings;
-
-import java.util.Arrays;
 
 /**
  * Created by ameyapandilwar on 8/18/16 at 2:30 AM.
@@ -26,7 +22,6 @@ import java.util.Arrays;
 public class FilterSettingsDialogFragment extends DialogFragment implements View.OnClickListener {
 
     private EditText etLatLng, etRadius, etCity, etState, etZip, etCountry, etStartDate;
-    private Spinner spSortOrder;
     private Button btnSave;
 
     public FilterSettingsDialogFragment() {
@@ -70,7 +65,6 @@ public class FilterSettingsDialogFragment extends DialogFragment implements View
         etZip = (EditText) view.findViewById(R.id.etZip);
         etCountry = (EditText) view.findViewById(R.id.etCountry);
         etStartDate = (EditText) view.findViewById(R.id.etStartDate);
-        spSortOrder = (Spinner) view.findViewById(R.id.spSortOrder);
         btnSave = (Button) view.findViewById(R.id.btnSave);
         SharedPreferences preferences = getContext().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
@@ -81,13 +75,6 @@ public class FilterSettingsDialogFragment extends DialogFragment implements View
         etZip.setText(preferences.getString("zip", ""));
         etCountry.setText(preferences.getString("country", ""));
         etStartDate.setText(preferences.getString("start_date", ""));
-
-        SpinnerAdapter<String> adapterSortOrder = new SpinnerAdapter(
-                getContext(),
-                R.layout.support_simple_spinner_dropdown_item,
-                Arrays.asList(getResources().getStringArray(R.array.sort_order_values))
-        );
-        spSortOrder.setAdapter(adapterSortOrder);
 
         etStartDate.setOnClickListener(v -> showDatePickerDialog());
         btnSave.setOnClickListener(this);

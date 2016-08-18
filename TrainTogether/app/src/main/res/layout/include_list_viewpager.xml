@@ -19,7 +19,7 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_scrollFlags="scroll|enterAlways|snap" />
 
-        <android.support.design.widget.TabLayout
+        <com.codepath.traintogether.utils.StylishTabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

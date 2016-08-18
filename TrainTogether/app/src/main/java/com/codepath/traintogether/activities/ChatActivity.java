@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -22,9 +21,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.traintogether.utils.Constants;
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.models.ChatMessage;
+import com.codepath.traintogether.utils.Constants;
 import com.codepath.traintogether.utils.ItemSpaceDecoration;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -47,7 +46,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by ameyapandilwar on 8/17/16
  */
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends BaseActivity {
 
     private static final String TAG = "ChatActivity";
 

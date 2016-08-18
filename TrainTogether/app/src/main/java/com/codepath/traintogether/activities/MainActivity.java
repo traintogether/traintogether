@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -14,7 +13,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +21,7 @@ import com.codepath.traintogether.R;
 import com.codepath.traintogether.fragments.FeedFragment;
 import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
 import com.codepath.traintogether.models.FilterSettings;
+import com.codepath.traintogether.utils.StylishTabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ import java.util.List;
 /**
  * Created by ameyapandilwar on 8/17/16
  */
-public class MainActivity extends AppCompatActivity implements FilterSettingsDialogFragment.FilterSettingsDialogListener {
+public class MainActivity extends BaseActivity implements FilterSettingsDialogFragment.FilterSettingsDialogListener {
 
     private static final String TAG = "MainActivity";
 
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements FilterSettingsDia
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> showFilterSettingsDialog());
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        StylishTabLayout tabLayout = (StylishTabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         preferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);

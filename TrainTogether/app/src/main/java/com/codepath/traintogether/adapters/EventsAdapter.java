@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.traintogether.R;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvTitle;
         public TextView tvDescription;
         public ImageView ivPoster;
@@ -37,7 +38,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             ibJoin = (ImageButton) view.findViewById(R.id.ibJoin);
 
             ibJoin.setOnClickListener(v -> {
-
+                Result event = mEvents.get(getLayoutPosition());
+                Toast.makeText(mContext, event.getAssetName(), Toast.LENGTH_SHORT).show();
             });
         }
     }

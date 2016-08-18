@@ -21,6 +21,7 @@
     <string name="chat">Chat</string>
     <string name="title_activity_feed">FeedActivity</string>
     <string name="feed">Feed</string>
+    <string name="fb_login_protocol_scheme">fb284489345258643</string>
 
     <string-array name="sort_order_values">
         <item>Date Ascending</item>

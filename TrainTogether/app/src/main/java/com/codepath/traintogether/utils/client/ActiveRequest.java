@@ -58,7 +58,7 @@ public class ActiveRequest {
     }
 
     public void setCity(String city) {
-        this.city = city;
+        this.city = city.replace(" ", "+");
     }
 
     public String getState() {
@@ -82,7 +82,7 @@ public class ActiveRequest {
     }
 
     public void setCountry(String country) {
-        this.country = country;
+        this.country = country.replace(" ", "%20");
     }
 
     public String getStartDate() {

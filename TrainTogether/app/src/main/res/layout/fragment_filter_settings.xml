@@ -23,6 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:hint="43.2,-118"
             android:editable="false"
             android:text="" />
     </TableRow>
@@ -44,6 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:hint="50"
             android:inputType="number"
             android:text="" />
     </TableRow>
@@ -65,6 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:hint="san diego"
             android:text="" />
     </TableRow>
 
@@ -85,6 +88,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:maxLength="2"
+            android:hint="CA"
             android:text="" />
     </TableRow>
 
@@ -105,6 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:hint="United States"
             android:text="" />
     </TableRow>
 
@@ -126,6 +132,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:inputType="number"
+            android:hint="92101"
+            android:maxLength="5"
             android:text="" />
     </TableRow>
 
@@ -148,27 +156,6 @@
             android:layout_marginLeft="5dp"
             android:editable="false"
             android:text="" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:id="@+id/tvSortOrder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sort Order"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/spSortOrder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp" />
-
     </TableRow>
 
     <TableRow
