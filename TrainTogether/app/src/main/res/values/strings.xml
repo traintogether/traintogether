@@ -27,4 +27,5 @@
         <item>Date Ascending</item>
         <item>Date Descending</item>
     </string-array>
+    <string name="title_activity_leader_board">LeaderBoardActivity</string>
 </resources>

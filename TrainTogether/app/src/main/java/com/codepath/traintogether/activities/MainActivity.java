@@ -121,6 +121,8 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
             case R.id.nav_login:
                 startActivity(new Intent(MainActivity.this, FacebookLoginActivity.class));
                 break;
+            case R.id.nav_leaderboard:
+                startActivity(new Intent(MainActivity.this, LeaderBoardActivity.class));
             default:
                 break;
         }
