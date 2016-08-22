@@ -1,146 +1,86 @@
 package com.codepath.traintogether.adapters;
 
-/**
- * Created by ameyapandilwar on 8/21/16 at 10:02 PM.
- */
-//public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
-//
-//    private static final String TAG = "GroupAdapter";
-//    private Context mContext;
-//    private DatabaseReference mDatabaseReference;
-//    private ChildEventListener mChildEventListener;
-//
-//    private List<Group> mGroups = new ArrayList<>();
-//
-//    public GroupAdapter(final Context context, DatabaseReference ref) {
-//        mContext = context;
-//        mDatabaseReference = ref;
-//
-//        // Create child event listener
-//        // [START child_event_listener_recycler]
-//        ChildEventListener childEventListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-//                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
-//
-//                // A new comment has been added, add it to the displayed list
-//                Group group = dataSnapshot.getValue(Group.class);
-//
-//                // [START_EXCLUDE]
-//                // Update RecyclerView
-//                mGroups.add(group);
-//                notifyItemInserted(mGroups.size() - 1);
-//                // [END_EXCLUDE]
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-//                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
-//
-//                // A comment has changed, use the key to determine if we are displaying this
-//                // comment and if so displayed the changed comment.
-//                Group newGroup = dataSnapshot.getValue(Group.class);
-//                String commentKey = dataSnapshot.getKey();
-//
-//                // [START_EXCLUDE]
-//                int commentIndex = mCommentIds.indexOf(commentKey);
-//                if (commentIndex > -1) {
-//                    // Replace with the new data
-//                    mGroups.set(commentIndex, newGroup);
-//
-//                    // Update the RecyclerView
-//                    notifyItemChanged(commentIndex);
-//                } else {
-//                    Log.w(TAG, "onChildChanged:unknown_child:" + commentKey);
-//                }
-//                // [END_EXCLUDE]
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-//
-//                // A comment has changed, use the key to determine if we are displaying this
-//                // comment and if so remove it.
-//                String commentKey = dataSnapshot.getKey();
-//
-//                // [START_EXCLUDE]
-//                int commentIndex = mCommentIds.indexOf(commentKey);
-//                if (commentIndex > -1) {
-//                    // Remove data from the list
-//                    mCommentIds.remove(commentIndex);
-//                    mComments.remove(commentIndex);
-//
-//                    // Update the RecyclerView
-//                    notifyItemRemoved(commentIndex);
-//                } else {
-//                    Log.w(TAG, "onChildRemoved:unknown_child:" + commentKey);
-//                }
-//                // [END_EXCLUDE]
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-//                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
-//
-//                // A comment has changed position, use the key to determine if we are
-//                // displaying this comment and if so move it.
-//                Comment movedComment = dataSnapshot.getValue(Comment.class);
-//                String commentKey = dataSnapshot.getKey();
-//
-//                // ...
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.w(TAG, "postComments:onCancelled", databaseError.toException());
-//                Toast.makeText(mContext, "Failed to load comments.",
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        };
-//        ref.addChildEventListener(childEventListener);
-//        // [END child_event_listener_recycler]
-//
-//        // Store reference to listener so it can be removed on app stop
-//        mChildEventListener = childEventListener;
-//    }
-//
-//    @Override
-//    public GroupViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        LayoutInflater inflater = LayoutInflater.from(mContext);
-//        View view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-//        return new GroupViewHolder(view);
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(GroupViewHolder holder, int position) {
-//        Group group = mGroups.get(position);
-//        holder.authorView.setText(group.eventId);
-//        holder.bodyView.setText(group.getUsers().toString());
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return mGroups.size();
-//    }
-//
-//    public void cleanupListener() {
-//        if (mChildEventListener != null) {
-//            mDatabaseReference.removeEventListener(mChildEventListener);
-//        }
-//    }
-//
-//    private static class GroupViewHolder extends RecyclerView.ViewHolder {
-//
-//        public TextView titleView;
-////        public TextView bodyView;
-//
-//        public GroupViewHolder(View itemView) {
-//            super(itemView);
-//
-//            titleView = (TextView) itemView.findViewById(R.id.title_text);
-////            bodyView = (TextView) itemView.findViewById(R.id.comment_body);
-//        }
-//    }
-//
-//}
+import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.models.Group;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+
+public class GroupsAdapter extends ArrayAdapter<Group> {
+
+    private static final String TAG = "GroupsAdapter";
+    private DatabaseReference mFirebaseDatabaseReference;
+    private FirebaseUser loggedUser;
+    private FirebaseAuth mAuth;
+
+    public GroupsAdapter(Context context, ArrayList<Group> groups) {
+        super(context, 0, groups);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // Get the data item for this position
+        Group group = getItem(position);
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_group, parent, false);
+        }
+        // Lookup view for data population
+        TextView tvUserNames = (TextView) convertView.findViewById(R.id.tvUserNames);
+        TextView tvGroupId = (TextView) convertView.findViewById(R.id.tvGroupId);
+        Button btnJoin = (Button) convertView.findViewById(R.id.btnJoin);
+
+        StringBuilder sb = new StringBuilder();
+        mAuth = FirebaseAuth.getInstance();
+        loggedUser = mAuth.getCurrentUser();
+        for(User user: group.users){
+            sb.append(user.getEmailId()).append(" ");
+            //current user cannot join himslef to a group
+            if(user.getEmailId() == loggedUser.getEmail()){
+                btnJoin.setEnabled(false);
+            }
+        }
+
+        tvGroupId.setText(group.getKey());
+        tvUserNames.setText(sb);
+
+        Log.i(TAG, "group key: " + group.getKey());
+
+        // Populate the data into the template view using the data object
+
+        btnJoin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                User user = new User();
+                user.emailId = loggedUser.getEmail();
+                user.displayName = loggedUser.getDisplayName();
+                user.uid = loggedUser.getUid();
+                group.users.add(user);
+
+                Log.i(TAG, "group key: " + group.getKey());
+                mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+                mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).child(group.getKey()).setValue(group);
+                btnJoin.setEnabled(false);
+            }
+        });
+
+        // Return the completed view to render on screen
+        return convertView;
+    }
+}

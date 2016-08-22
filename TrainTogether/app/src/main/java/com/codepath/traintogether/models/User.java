@@ -1,8 +1,15 @@
 package com.codepath.traintogether.models;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by santoshag on 8/5/16.
  */
+@IgnoreExtraProperties
 public class User{
 
     public String uid;
@@ -30,5 +37,14 @@ public class User{
 
     }
 
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", uid);
+        result.put("emailId", emailId);
+        result.put("photoUrl", photoUrl);
+        result.put("displayName", displayName);
 
+        return result;
+    }
 }

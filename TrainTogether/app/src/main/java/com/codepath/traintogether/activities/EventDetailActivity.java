@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.adapters.GroupsAdapter;
 import com.codepath.traintogether.models.Group;
 import com.codepath.traintogether.models.User;
 import com.google.firebase.database.ChildEventListener;
@@ -20,10 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-import org.w3c.dom.Comment;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +35,7 @@ public class EventDetailActivity extends AppCompatActivity {
     @BindView(R.id.lvGroups)
     ListView lvGroups;
 
-    List<String> groups;
+    ArrayList<Group> groups;
     private DatabaseReference mFirebaseDatabaseReference;
 
     ArrayAdapter groupsAdapter;
@@ -59,28 +57,9 @@ public class EventDetailActivity extends AppCompatActivity {
 
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         System.out.println(eventId);
-        Query qry = mFirebaseDatabaseReference.child("groups");
+        Query qry = mFirebaseDatabaseReference.child("groups").orderByChild("eventId").equalTo(eventId);
 
-//        ValueEventListener postListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                System.out.println(dataSnapshot);
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Group group = snapshot.getValue(Group.class);
-//                    groups.add(group.getEventId());
-//                }
-//                System.out.println(groups);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-//
-//        mFirebaseDatabaseReference.addValueEventListener(postListener);
-
-        groupsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, groups);
+        groupsAdapter = new GroupsAdapter(this, groups);
         lvGroups.setAdapter(groupsAdapter);
 
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -88,23 +67,15 @@ public class EventDetailActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                 Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
 
-                // A new comment has been added, add it to the displayed list
                 Group group = dataSnapshot.getValue(Group.class);
-                System.out.println(group);
-                // [START_EXCLUDE]
-                // Update RecyclerView
-//                mGroups.add(group);
-                StringBuilder sb = new StringBuilder();
-                if (group.getEventId().equalsIgnoreCase(eventId)) {
-                    sb.append(group.getEventId()).append(" | ");
-                    for (User user : group.getUsers()) {
-                        sb.append(user.emailId);
-                    }
-                    groups.add(sb.toString());
-                    groupsAdapter.notifyDataSetChanged();
+                Log.i(TAG, group.getKey() + " " + group.users.size());
+                for(User u:group.users){
+                    Log.i(TAG, u.getEmailId());
+
                 }
-//                notifyItemInserted(mGroups.size() - 1);
-                // [END_EXCLUDE]
+                groupsAdapter.add(group);
+
+                //groupsAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -118,19 +89,13 @@ public class EventDetailActivity extends AppCompatActivity {
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
                 Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
-
-                // A comment has changed position, use the key to determine if we are
-                // displaying this comment and if so move it.
-                Comment movedComment = dataSnapshot.getValue(Comment.class);
-                String commentKey = dataSnapshot.getKey();
-
-                // ...
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         };
+
         qry.addChildEventListener(childEventListener);
 
 //        groupsAdapter = new GroupsAdapter(this, mFirebaseDatabaseReference);
@@ -139,7 +104,8 @@ public class EventDetailActivity extends AppCompatActivity {
         lvGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                String group = (String) adapterView.getItemAtPosition(i);
+                Log.i(TAG, group);
             }
         });
     }

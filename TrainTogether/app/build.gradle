@@ -71,6 +71,11 @@ dependencies {
     compile 'com.google.android.gms:play-services-fitness:9.4.0'
 
     compile 'org.parceler:parceler-api:1.1.1'
+
+    //jackson parser for json
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.3'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

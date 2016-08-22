@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.traintogether.R;
-import com.codepath.traintogether.activities.FacebookLoginActivity;
 import com.codepath.traintogether.models.Group;
 import com.codepath.traintogether.models.User;
 import com.codepath.traintogether.models.active.AssetDescription;
@@ -53,13 +52,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 Result event = mEvents.get(getLayoutPosition());
                 Toast.makeText(mContext, event.getAssetName(), Toast.LENGTH_SHORT).show();
 
-
-                FacebookLoginActivity fbActivity = new FacebookLoginActivity();
-
                 mAuth = FirebaseAuth.getInstance();
                 //loggedUser = fbActivity.getUser();
                 loggedUser = mAuth.getCurrentUser();
-                if(loggedUser != null) {
+                if (loggedUser != null) {
                     Group group = new Group();
                     User user = new User();
                     user.emailId = loggedUser.getEmail();
@@ -68,7 +64,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                     group.eventId = event.getAssetGuid();
                     group.users.add(user);
                     mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-                    mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).push().setValue(group);                }
+                    String key = mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).push().getKey();
+                    group.key = key;
+                    mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).child(key).setValue(group);
+                }
             });
         }
     }
