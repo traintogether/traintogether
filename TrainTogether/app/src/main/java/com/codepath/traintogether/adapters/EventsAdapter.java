@@ -13,8 +13,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.activities.FacebookLoginActivity;
+import com.codepath.traintogether.models.Group;
+import com.codepath.traintogether.models.User;
 import com.codepath.traintogether.models.active.AssetDescription;
 import com.codepath.traintogether.models.active.Result;
+import com.codepath.traintogether.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -29,6 +37,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         public ImageView ivPoster;
         public ImageButton ibJoin;
 
+        private FirebaseUser loggedUser;
+        private FirebaseAuth mAuth;
+        private DatabaseReference mFirebaseDatabaseReference;
+
         public ViewHolder(View view) {
             super(view);
 
@@ -40,6 +52,23 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             ibJoin.setOnClickListener(v -> {
                 Result event = mEvents.get(getLayoutPosition());
                 Toast.makeText(mContext, event.getAssetName(), Toast.LENGTH_SHORT).show();
+
+
+                FacebookLoginActivity fbActivity = new FacebookLoginActivity();
+
+                mAuth = FirebaseAuth.getInstance();
+                //loggedUser = fbActivity.getUser();
+                loggedUser = mAuth.getCurrentUser();
+                if(loggedUser != null) {
+                    Group group = new Group();
+                    User user = new User();
+                    user.emailId = loggedUser.getEmail();
+                    user.displayName = loggedUser.getDisplayName();
+                    user.uid = loggedUser.getUid();
+                    group.eventId = event.getAssetGuid();
+                    group.users.add(user);
+                    mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+                    mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).push().setValue(group);                }
             });
         }
     }

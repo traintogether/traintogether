@@ -11,6 +11,7 @@ public class Constants {
     // ChatActivity
     public static final int ONE_HOUR = 3600;
     public static final String MESSAGES_CHILD = "messages";
+    public static final String GROUPS_CHILD = "groups";
     public static final int REQUEST_INVITE = 1;
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
     public static final String ANONYMOUS = "anonymous";
