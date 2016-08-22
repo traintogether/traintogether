@@ -40,6 +40,8 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 <img src='http://i.imgur.com/glNu54L.gif' />
 <br/>
 
+2. Leaderboard
+<img src='https://github.com/traintogether/traintogether/blob/master/Leaderboard_SP1.gif' />
 ## Wireframes:
 1. Home Navigation
 <br/>
