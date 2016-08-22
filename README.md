@@ -34,6 +34,12 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 ### Best Practices:
 * [ ]	Any user is able to view upcoming events and look around before joining a event which will be allowed after account creation
 
+## Walkthroughs (Sprint 1):
+1. Upcoming Events Feed / Login / Chat 
+<br/>
+<img src='http://i.imgur.com/glNu54L.gif' />
+<br/>
+
 ## Wireframes:
 1. Home Navigation
 <br/>
