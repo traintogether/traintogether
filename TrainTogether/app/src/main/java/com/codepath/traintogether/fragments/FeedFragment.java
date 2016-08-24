@@ -1,6 +1,7 @@
 package com.codepath.traintogether.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,13 +13,15 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.activities.EventDetailActivity;
 import com.codepath.traintogether.adapters.EventsAdapter;
-import com.codepath.traintogether.utils.client.ActiveRequest;
-import com.codepath.traintogether.utils.client.ActiveResponse;
 import com.codepath.traintogether.models.active.Result;
-import com.codepath.traintogether.utils.client.ActiveClient;
+import com.codepath.traintogether.utils.ItemClickSupport;
 import com.codepath.traintogether.utils.ItemSpaceDecoration;
 import com.codepath.traintogether.utils.Utils;
+import com.codepath.traintogether.utils.client.ActiveClient;
+import com.codepath.traintogether.utils.client.ActiveRequest;
+import com.codepath.traintogether.utils.client.ActiveResponse;
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -78,6 +81,14 @@ public class FeedFragment extends BaseFragment {
         rvEvents.setHasFixedSize(true);
         rvEvents.addItemDecoration(new ItemSpaceDecoration(5));
         rvEvents.setLayoutManager(new LinearLayoutManager(context));
+
+        ItemClickSupport.addTo(rvEvents).setOnItemClickListener((recyclerView, position, v) -> {
+            Result event = events.get(position);
+            Intent intent = new Intent(getContext(), EventDetailActivity.class);
+            intent.putExtra("eventId", event.getAssetGuid());
+            intent.putExtra("eventName", event.getAssetName());
+            startActivity(intent);
+        });
     }
 
     private void loadEvents() {

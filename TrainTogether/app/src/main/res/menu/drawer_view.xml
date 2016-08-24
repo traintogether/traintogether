@@ -11,6 +11,10 @@
             android:icon="@drawable/common_ic_googleplayservices"
             android:title="Chat" />
         <item
+            android:id="@+id/nav_stats"
+            android:icon="@drawable/common_ic_googleplayservices"
+            android:title="Stats" />
+        <item
             android:id="@+id/nav_login"
             android:icon="@drawable/common_ic_googleplayservices"
             android:title="Login" />

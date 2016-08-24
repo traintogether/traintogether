@@ -39,6 +39,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
     FeedFragment fragment = new FeedFragment();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +71,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
         tabLayout.setupWithViewPager(viewPager);
 
         preferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+
     }
 
     @Override
@@ -123,6 +125,10 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
                 break;
             case R.id.nav_leaderboard:
                 startActivity(new Intent(MainActivity.this, LeaderBoardActivity.class));
+                break;
+            case R.id.nav_stats:
+                startActivity(new Intent(MainActivity.this, StatsActivity.class));
+                break;
             default:
                 break;
         }

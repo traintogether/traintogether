@@ -22,6 +22,7 @@
     <string name="title_activity_feed">FeedActivity</string>
     <string name="feed">Feed</string>
     <string name="fb_login_protocol_scheme">fb284489345258643</string>
+    <string name="auth_failed">Invalid user name or password</string>
 
     <string-array name="sort_order_values">
         <item>Date Ascending</item>

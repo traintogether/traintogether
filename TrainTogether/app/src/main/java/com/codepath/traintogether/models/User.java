@@ -1,9 +1,34 @@
 package com.codepath.traintogether.models;
 
-/**
- * Created by alishaalam on 8/18/16.
- */
+import com.google.firebase.database.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
 public class User {
+
+    public String uid;
+    public String emailId;
+    public String photoUrl;
+    public String displayName;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public String getEmailId() {
+        return emailId;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public User() {
+
+    }
 
     String name;
     String location;

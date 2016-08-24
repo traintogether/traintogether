@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="2"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -61,14 +61,16 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:background="@color/grey_300">
+
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/button_facebook_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_below="@+id/btnLogin"
+            android:layout_centerHorizontal="true" />
 
         <Button
             android:id="@+id/button_facebook_signout"
@@ -78,6 +80,36 @@
             android:text="@string/sign_out"
             android:theme="@style/ThemeOverlay.MyDarkButton"
             android:visibility="gone"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/etEmail"
+            android:hint="Email"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/etPassword"
+            android:hint="Password"
+            android:layout_below="@+id/etEmail"
+            android:layout_alignLeft="@+id/etEmail"
+            android:layout_alignStart="@+id/etEmail" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign in"
+            android:id="@+id/btnLogin"
+            android:layout_below="@+id/etPassword"
+            android:layout_centerHorizontal="true"
+            android:onClick="signInUser"/>
 
     </RelativeLayout>
 

@@ -2,9 +2,11 @@ package com.codepath.traintogether.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +18,10 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,7 +48,16 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
     Button btnChat;
     @BindView(R.id.button_feed)
     Button btnFeed;
+    @BindView(R.id.etEmail)
+    EditText etEmail;
+    @BindView(R.id.etPassword)
+    EditText etPassword;
 
+    public FirebaseUser getUser() {
+        return user;
+    }
+
+    private FirebaseUser user;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -63,7 +77,7 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
+            user = firebaseAuth.getCurrentUser();
             if (user != null) {
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
             } else {
@@ -73,6 +87,26 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
         };
 
         initializeFacebookLogin();
+
+//  TODO: create more users
+//  for(int i=19; i<40; i++) {
+//            mAuth.createUserWithEmailAndPassword("tt"+ i  + "@gmail.com", "123456")
+//                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+//
+//                            // If sign in fails, display a message to the user. If sign in succeeds
+//                            // the auth state listener will be notified and logic to handle the
+//                            // signed in user can be handled in the listener.
+//                            if (!task.isSuccessful()) {
+//                                Toast.makeText(FacebookLoginActivity.this, R.string.auth_failed,
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                        }
+//                    });
+//        }
     }
 
     private void initializeFacebookLogin() {
@@ -182,5 +216,28 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
 
     private void navigateToFeed() {
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    public void signInUser(View view) {
+
+        mAuth.signInWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(FacebookLoginActivity.this, R.string.auth_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        // ...
+                    }
+                });
+
     }
 }

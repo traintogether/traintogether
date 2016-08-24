@@ -1,11 +1,14 @@
 package com.codepath.traintogether.models.active;
 
+import org.parceler.Parcel;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ameyapandilwar on 8/17/16 at 1:52 PM.
  */
+@Parcel
 public class Result {
 
     private List<AssetTopic> assetTopics = new ArrayList<AssetTopic>();
