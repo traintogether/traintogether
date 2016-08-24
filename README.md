@@ -15,19 +15,22 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 * [ ]	User can **view the leaderboard**
 * [ ]	User can **start a run** and see current run map along with statistics
 	* [ ] Optional: Voice information on run events
+* [ ]	Users requests to join others - implemented using push notifications
 * [x]	Any user is able to view upcoming events and look around before joining a event which will be allowed after account creation
 
 ### The following **optional** identified user stories/features are:
 * [ ]	User can **invite friends and join events to train together**
 * [ ]	User can **view training schedules**
-* [ ] User is displayed the provided with a training schedule and can modify as per preference
-* [ ] User get notification on runs based on training schedules
-* [ ]	User can **view personal statistics**
+    * [ ] User is displayed the provided with a training schedule and can modify as per preference
+    * [ ] User get notification on runs based on training schedules
+* [ ]	User can search marathons based on a **query and any distance**
 * [ ]	User can **track current run on google maps**
+* [ ]	User can **view personal statistics**
+* [ ]	Name groups ("\<random name\> - \<marathon name\>"")
 * [ ]	User can **view previous runs on Google Maps**
 * [ ]	Users are **provided reminders about upcoming events**
 * [ ]	Users are **matched to volunteering trainers / mentors**
-* [ ]   User can **unlock new achievements**
+* [ ]	User can **unlock new achievements**
 * [ ]	**Stretch**: Monetize the app using trainers available ads and local sporting goods store ads 
 * [ ]	**Stretch**: Integrate Spotify music
 * [ ]	**Stretch**: Google watch app 
