@@ -26,6 +26,7 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 * [ ]	User can search marathons based on a **query and any distance**
 * [ ]	User can **track current run on google maps**
 * [ ]	User can **view personal statistics**
+* [ ]	Final event tracking
 * [ ]	Name groups ("\<random name\> - \<marathon name\>"")
 * [ ]	User can **view previous runs on Google Maps**
 * [ ]	Users are **provided reminders about upcoming events**
