@@ -23,7 +23,7 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 * [ ]	User can **view training schedules**
     * [ ] User is displayed the provided with a training schedule and can modify as per preference
     * [ ] User get notification on runs based on training schedules
-* [ ]	User can search marathons based on a **query and any distance**
+* [x]	User can search marathons based on a **query and any distance**
 * [ ]	User can **track current run on google maps**
 * [ ]	User can **view personal statistics**
 * [ ]	Final event tracking
