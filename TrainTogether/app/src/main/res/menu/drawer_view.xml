@@ -26,6 +26,10 @@
             android:id="@+id/nav_leaderboard"
             android:icon="@drawable/common_ic_googleplayservices"
             android:title="Leaderboard" />
+        <item
+            android:id="@+id/nav_preference"
+            android:icon="@drawable/common_ic_googleplayservices"
+            android:title="Preferences" />
     </group>
 
     <item android:title="Sub items">
