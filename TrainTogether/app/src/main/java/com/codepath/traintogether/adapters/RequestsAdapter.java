@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.TrainTogetherApplication;
@@ -25,7 +26,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RequestsAdapter extends ArrayAdapter<Request> {
@@ -68,9 +68,7 @@ public class RequestsAdapter extends ArrayAdapter<Request> {
                 mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
                 mFirebaseDatabaseReference.child(Constants.REQUESTS_CHILD).child(request.getKey()).setValue(request);
 
-                if (isLastPendingRequest(request.getFromId(), request.getGroupKey())) {
-                    getUser(request.getFromId(), request.getGroupKey());
-                };
+                isLastPendingRequest(request.getFromId(), request.getGroupKey());
 
                 btnJoin.setEnabled(false);
             }
@@ -156,45 +154,35 @@ public class RequestsAdapter extends ArrayAdapter<Request> {
         qry.addChildEventListener(childEventListener);
     }
 
-    private boolean isLastPendingRequest(String fromId, String groupKey) {
+    private void isLastPendingRequest(String fromId, String groupKey) {
         Query qry = mFirebaseDatabaseReference.child(Constants.REQUESTS_CHILD).orderByChild("fromId").equalTo(fromId);
 
-        List<String> list = new ArrayList<>();
-
-        ChildEventListener childEventListener = new ChildEventListener() {
+        qry.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean anyPendingReq = true;
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    //Getting the data from snapshot
+                    Request request = postSnapshot.getValue(Request.class);
 
-                Request request = dataSnapshot.getValue(Request.class);
-                if (request.getGroupKey().equalsIgnoreCase(groupKey) && !request.getStatus()) {
-                    list.add(groupKey);
+                    if (!request.getStatus()) {
+                        anyPendingReq = true;
+                        break;
+                    }
+                    anyPendingReq = false;
+
                 }
-
-                //groupsAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+                if(!anyPendingReq) {
+                    getUser(fromId, groupKey);
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
             }
-        };
 
-        qry.addChildEventListener(childEventListener);
-
-        return list.size() == 0;
+        });
     }
 
 }
