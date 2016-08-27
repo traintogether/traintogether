@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
 import com.codepath.traintogether.models.Group;
 import com.codepath.traintogether.models.Request;
 import com.codepath.traintogether.models.User;
@@ -123,7 +124,11 @@ public class RequestsAdapter extends ArrayAdapter<Request> {
                 Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
 
                 Group group = dataSnapshot.getValue(Group.class);
+                user.groups.add(group.key);
+
                 group.users.add(user);
+                TrainTogetherApplication.setCurrentUser(user);
+                mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(user.getUid()).setValue(user);
 
                 mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).child(groupKey).setValue(group);
 

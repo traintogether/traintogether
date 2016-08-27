@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
 import com.codepath.traintogether.models.User;
 import com.codepath.traintogether.utils.Constants;
 import com.facebook.AccessToken;
@@ -221,6 +222,7 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
         } else {
             mFirebaseDatabaseReference.child(Constants.USERS_CHILD).push().setValue(user);
         }
+        TrainTogetherApplication.setCurrentUser(user);
     }
 
     @Override

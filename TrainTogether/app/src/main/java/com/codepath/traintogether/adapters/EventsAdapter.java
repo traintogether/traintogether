@@ -1,5 +1,19 @@
 package com.codepath.traintogether.adapters;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import com.bumptech.glide.Glide;
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.models.Group;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.models.active.AssetDescription;
+import com.codepath.traintogether.models.active.Result;
+import com.codepath.traintogether.utils.Constants;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -10,18 +24,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.models.Group;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.models.active.AssetDescription;
-import com.codepath.traintogether.models.active.Result;
-import com.codepath.traintogether.utils.Constants;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -62,10 +64,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                     user.displayName = loggedUser.getDisplayName();
                     user.uid = loggedUser.getUid();
                     group.eventId = event.getAssetGuid();
-                    group.users.add(user);
                     mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
                     String key = mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).push().getKey();
                     group.key = key;
+
+                    user.groups.add(group.key);
+                    TrainTogetherApplication.setCurrentUser(user);
+                    mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(user.getUid()).setValue(user);
+
+                    group.users.add(user);
                     mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).child(key).setValue(group);
                 }
             });
