@@ -2,6 +2,9 @@ package com.codepath.traintogether.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @IgnoreExtraProperties
 public class User {
 
@@ -36,6 +39,11 @@ public class User {
     int miles;
     int runs;
     private String profileImageUrl;
+    public List<String> groups = new ArrayList<>();
+
+    public List<String> getGroups() {
+        return groups;
+    }
 
     public User(String name, String location, int rank, int miles, int runs) {
         this.name = name;

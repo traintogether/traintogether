@@ -1,5 +1,24 @@
 package com.codepath.traintogether.activities;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+
+import com.bumptech.glide.Glide;
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.models.ChatMessage;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+import com.codepath.traintogether.utils.ItemSpaceDecoration;
+import com.facebook.login.LoginManager;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -19,22 +38,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.models.ChatMessage;
-import com.codepath.traintogether.utils.Constants;
-import com.codepath.traintogether.utils.ItemSpaceDecoration;
-import com.facebook.login.LoginManager;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.appinvite.AppInviteInvitation;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,6 +86,8 @@ public class ChatActivity extends BaseActivity {
     private FirebaseUser mFirebaseUser;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
+    private String chatRoom = Constants.MESSAGES_CHILD;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +96,8 @@ public class ChatActivity extends BaseActivity {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mUsername = Constants.ANONYMOUS;
+
+        initializeChatRoom();
 
         initializeFirebase();
 
@@ -104,9 +111,16 @@ public class ChatActivity extends BaseActivity {
 
         btnSend.setOnClickListener(view -> {
             ChatMessage message = new ChatMessage(etMessage.getText().toString(), mUsername, mPhotoUrl);
-            mFirebaseDatabaseReference.child(Constants.MESSAGES_CHILD).push().setValue(message);
+            mFirebaseDatabaseReference.child(chatRoom).push().setValue(message);
             etMessage.setText("");
         });
+    }
+
+    private void initializeChatRoom() {
+        User currentUser = TrainTogetherApplication.getCurrentUser();
+        if (currentUser.getGroups().size() > 0) {
+            chatRoom = String.format("%s%s", Constants.MESSAGES_CHILD, currentUser.getGroups().get(0));
+        }
     }
 
     private void applyFilters() {
@@ -141,7 +155,7 @@ public class ChatActivity extends BaseActivity {
                 ChatMessage.class,
                 R.layout.item_message,
                 MessageViewHolder.class,
-                mFirebaseDatabaseReference.child(Constants.MESSAGES_CHILD)) {
+                mFirebaseDatabaseReference.child(chatRoom)) {
 
             @Override
             protected void populateViewHolder(MessageViewHolder viewHolder, ChatMessage chatMessage, int position) {
