@@ -1,5 +1,16 @@
 package com.codepath.traintogether.adapters;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.models.Group;
+import com.codepath.traintogether.models.Request;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,15 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.models.Group;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.utils.Constants;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -66,21 +68,33 @@ public class GroupsAdapter extends ArrayAdapter<Group> {
             @Override
             public void onClick(View view) {
 
-
                 User user = new User();
                 user.emailId = loggedUser.getEmail();
                 user.displayName = loggedUser.getDisplayName();
                 user.uid = loggedUser.getUid();
-                group.users.add(user);
+
+                mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+                for (User u : group.getUsers()) {
+                    sendNotificationToUser(u.getUid(), user.uid, group.getKey());
+                }
+
+//                group.users.add(user);
 
                 Log.i(TAG, "group key: " + group.getKey());
-                mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-                mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).child(group.getKey()).setValue(group);
+//                mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).child(group.getKey()).setValue(group);
+
                 btnJoin.setEnabled(false);
             }
         });
 
         // Return the completed view to render on screen
         return convertView;
+    }
+
+    private void sendNotificationToUser(String toUid, String fromUid, String groupKey) {
+        Request request = new Request(toUid, fromUid, groupKey);
+        String key = mFirebaseDatabaseReference.child(Constants.REQUESTS_CHILD).push().getKey();
+        request.key = key;
+        mFirebaseDatabaseReference.child(Constants.REQUESTS_CHILD).child(key).setValue(request);
     }
 }

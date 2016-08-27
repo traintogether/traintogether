@@ -1,5 +1,11 @@
 package com.codepath.traintogether.activities;
 
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.fragments.FeedFragment;
+import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
+import com.codepath.traintogether.models.FilterSettings;
+import com.codepath.traintogether.utils.StylishTabLayout;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,12 +22,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.fragments.FeedFragment;
-import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
-import com.codepath.traintogether.models.FilterSettings;
-import com.codepath.traintogether.utils.StylishTabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +128,9 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
                 break;
             case R.id.nav_stats:
                 startActivity(new Intent(MainActivity.this, StatsActivity.class));
+                break;
+            case R.id.nav_requests:
+                startActivity(new Intent(MainActivity.this, RequestActivity.class));
                 break;
             default:
                 break;
