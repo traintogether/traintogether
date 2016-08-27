@@ -11,11 +11,11 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 * [ ]	User can **view training session statistics**
   * [ ] User is displayed the statistics for each session and is provided with visualizations for group as well as individual statistics
 * [ ]	User can **view profile and update preferences**
-* [ ]	User can **chat with other people in the group**
+* [x]	User can **chat with other people in the group**
 * [ ]	User can **view the leaderboard**
 * [ ]	User can **start a run** and see current run map along with statistics
 	* [ ] Optional: Voice information on run events
-* [ ]	Users requests to join others - implemented using push notifications
+* [x]	User can request to join groups
 * [x]	Any user is able to view upcoming events and look around before joining a event which will be allowed after account creation
 
 ### The following **optional** identified user stories/features are:
