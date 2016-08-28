@@ -73,6 +73,7 @@
                 android:value="com.codepath.traintogether.activities.MainActivity" />
         </activity>
         <activity android:name=".activities.StatsActivity" />
+
         <activity
             android:name=".activities.EventDetailActivity"></activity>
         <activity
@@ -82,6 +83,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.codepath.traintogether.activities.MainActivity" />
         </activity>
+
+        <activity android:name=".activities.RequestActivity" />
 
     </application>
 
