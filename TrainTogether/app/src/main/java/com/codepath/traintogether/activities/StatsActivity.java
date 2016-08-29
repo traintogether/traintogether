@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.result.DataSourcesResult;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 
 import butterknife.BindView;
@@ -48,6 +50,10 @@ public class StatsActivity extends AppCompatActivity implements OnDataPointListe
     OnDataPointListener mSpeedListener;
     OnDataPointListener mLocationListener;
     OnDataPointListener mDistanceListener;
+    private static Location lastLocation = new Location("");
+
+    private static float distance = 0;
+    private static Double calorie;
 
     @BindView(R.id.tvStats)
     TextView tvStats;
@@ -55,6 +61,8 @@ public class StatsActivity extends AppCompatActivity implements OnDataPointListe
     TextView tvSpeed;
     @BindView(R.id.tvDistance)
     TextView tvDistance;
+    @BindView(R.id.tvCalorie)
+    TextView tvCalorie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,6 +236,8 @@ public class StatsActivity extends AppCompatActivity implements OnDataPointListe
     }
 
     private void registerFitnessDataListener(DataSource dataSource, DataType dataType, int REQUEST_STAT_TYPE) {
+        DecimalFormat df2FractionDigits = new DecimalFormat();
+        df2FractionDigits.setMaximumFractionDigits(2);
 
         switch (REQUEST_STAT_TYPE){
             case Constants.REQUEST_TYPE_SPEED:
@@ -236,15 +246,14 @@ public class StatsActivity extends AppCompatActivity implements OnDataPointListe
                     public void onDataPoint(DataPoint dataPoint) {
                         for (Field field : dataPoint.getDataType().getFields()) {
                             Float val = dataPoint.getValue(field).asFloat();
-
+                            float metersPerSecondToMilesPerHour = (float) 2.23694;
+                            Log.i(TAG, "Detected DataPoint field: " + field.getName());
+                            Log.i(TAG, "Detected DataPoint value: " + String.valueOf(val * metersPerSecondToMilesPerHour));
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    float metersPerSecondToMilesPerHour = (float) 2.23694;
                                     Calendar c = Calendar.getInstance();
-                                    tvSpeed.setText("Current speed: " + String.valueOf(val * metersPerSecondToMilesPerHour));
-                                    Log.i(TAG, "Detected DataPoint field: " + field.getName());
-                                    Log.i(TAG, "Detected DataPoint value: " + String.valueOf(val * metersPerSecondToMilesPerHour));
+                                    tvSpeed.setText("Pace: " + String.valueOf(df2FractionDigits.format(val * metersPerSecondToMilesPerHour)) + " mph");
                                 }
                             });
                         }
@@ -273,21 +282,57 @@ public class StatsActivity extends AppCompatActivity implements OnDataPointListe
                 mLocationListener = new OnDataPointListener() {
                 @Override
                 public void onDataPoint(DataPoint dataPoint) {
+
+                    Location currentLocation = new Location("");
                     for (Field field : dataPoint.getDataType().getFields()) {
-                        Value val = dataPoint.getValue(field);
+                        Float val = dataPoint.getValue(field).asFloat();
+                        Log.i(TAG, "Detected DataPoint field: " + field.getName());
+                        Log.i(TAG, "Detected DataPoint value: " + val);
+                        String fieldName = field.getName();
+                        switch (fieldName){
+                            case "latitude":
+                                currentLocation.setLatitude(val);
+                                break;
+                            case "longitude":
+                                currentLocation.setLongitude(val);
+                                break;
+                        }
 
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Calendar c = Calendar.getInstance();
                                 tvStats.setText(tvStats.getText() + "\n" + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND) + " Field: " + field.getName() + " Value: " + val);
-                                Log.i(TAG, "Detected DataPoint field: " + field.getName());
-                                Log.i(TAG, "Detected DataPoint value: " + val);
+
+
                             }
                         });
-
-
                     }
+
+                    if(lastLocation.getLongitude() != 0 && lastLocation.getLatitude() != 0/* only one condition is enough to check empty location*/){
+                        distance = distance + (currentLocation.distanceTo(lastLocation) * (float) 0.000621371); //convert meters to miles 1 meter = 0.000621371 miles
+                        //TODO: get weight from profile preferences
+                        /*
+                         * FORMULA to calculate the calorie burned
+                         * Adapted from "Energy Expenditure of Walking and Running," Medicine & Science in Sport & Exercise, Cameron et al, Dec. 2004.
+                         * */
+                        calorie = distance * 0.75 * 160 ; //160 here is arbitrary weight value in lbs
+                        Log.i(TAG, "Distance: " + distance + " "  + currentLocation.getLatitude() + " "+ currentLocation.getLongitude() + " "+ lastLocation.getLatitude() + " "+ lastLocation.getLongitude() + " " + currentLocation.distanceTo(lastLocation));
+                    }
+                    lastLocation.setLatitude(currentLocation.getLatitude());
+                    lastLocation.setLongitude(currentLocation.getLongitude());
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(distance > 0.01){
+                                tvDistance.setText("Distance: " + String.valueOf(df2FractionDigits.format(distance)) + " miles");
+                                tvCalorie.setText("Calorie: " + String.valueOf(calorie.intValue()));
+                            }else{
+                                tvDistance.setText("Distance: --:--");
+                            }
+                        }
+                    });
                 }
             };
 
