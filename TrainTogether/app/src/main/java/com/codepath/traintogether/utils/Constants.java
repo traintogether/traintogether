@@ -12,6 +12,7 @@ public class Constants {
     public static final int ONE_HOUR = 3600;
     public static final String MESSAGES_CHILD = "messages";
     public static final String GROUPS_CHILD = "groups";
+    public static final String USER_RUNS_CHILD = "runs";
     public static final int REQUEST_INVITE = 1;
 
 

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.models.Run;
 import com.codepath.traintogether.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
@@ -31,6 +32,10 @@ import com.google.android.gms.fitness.request.DataSourcesRequest;
 import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.result.DataSourcesResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
@@ -54,6 +59,10 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
 
     private static float distance = 0;
     private static Double calorie;
+
+    private FirebaseUser currentUser;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mFirebaseDatabaseReference;
 
     @BindView(R.id.tvStats)
     TextView tvStats;
@@ -430,6 +439,8 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
         unregisterFitnessDataListener(mSpeedListener);
         unregisterFitnessDataListener(mLocationListener);
         unregisterFitnessDataListener(mDistanceListener);
+        saveToDB();
+
     }
 
     /**
@@ -460,6 +471,22 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                     }
                 });
         // [END unregister_data_listener]
+
+    }
+
+    private void saveToDB(){
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            //push the current run to user child
+            mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+            String key = mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(currentUser.getUid()).child(Constants.USER_RUNS_CHILD).push().getKey();
+            Run run = new Run(key, distance, calorie);
+            mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(currentUser.getUid()).child(Constants.USER_RUNS_CHILD).child(key).setValue(run);
+
+            //recalculate group statistics and update db
+            
+        }
     }
 
 }
