@@ -31,7 +31,6 @@
     <string name="title_activity_leader_board">LeaderBoardActivity</string>
 
 
-
     <string name="pref_user_profile">User Profile</string>
     <string name="pref_user_name">Username</string>
     <string name="pref_user_name_summary">Set your username</string>
@@ -68,5 +67,6 @@
         <item name="2">2</item>
         <item name="3">3</item>
     </string-array>
+    <string name="title_activity_schedule">ScheduleActivity</string>
 
 </resources>

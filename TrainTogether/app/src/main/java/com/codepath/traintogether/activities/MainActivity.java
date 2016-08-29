@@ -164,11 +164,16 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
             case R.id.nav_preference:
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                break;
 
             case R.id.nav_requests:
                 startActivity(new Intent(MainActivity.this, RequestActivity.class));
-
                 break;
+
+            case R.id.nav_schedule:
+                startActivity(new Intent(MainActivity.this, ScheduleActivity.class));
+                break;
+
             default:
                 break;
         }
