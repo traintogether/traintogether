@@ -13,6 +13,15 @@ public class Constants {
     public static final String MESSAGES_CHILD = "messages";
     public static final String GROUPS_CHILD = "groups";
     public static final int REQUEST_INVITE = 1;
+
+
+    //Stats request ids
+    public static final int REQUEST_TYPE_SPEED = 1000;
+    public static final int REQUEST_TYPE_LOCATION = 1001;
+    public static final int REQUEST_AGGREGATE_DISTANCE_DELTA = 1002;
+
+    //permission requests
+    public static final int REQUEST_LOCATION = 2000;
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
     public static final String ANONYMOUS = "anonymous";
 
