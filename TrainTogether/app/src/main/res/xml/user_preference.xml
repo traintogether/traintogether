@@ -1,0 +1,33 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_user_profile" >
+        <EditTextPreference
+            android:title="@string/pref_user_name"
+            android:summary="@string/pref_user_name_summary"
+            android:key="prefUsername"/>
+
+        <EditTextPreference
+            android:title="@string/pref_user_location"
+            android:summary="@string/pref_user_location_summary"
+            android:key="prefUserLocation"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_user_setting" >
+        <ListPreference
+            android:key="prefMarathonType"
+            android:entries="@array/marathonTypes"
+            android:summary="@string/pref_running_summary"
+            android:entryValues="@array/marathonTypeValues"
+            android:title="@string/pref_marathon_type"
+            android:defaultValue="1"/>
+
+        <ListPreference
+            android:key="prefUserRunningLevel"
+            android:entries="@array/userRunningLevel"
+            android:summary="@string/pref_user_running_level_summary"
+            android:entryValues="@array/userRunningLevelValues"
+            android:title="@string/pref_user_running_level"
+            android:defaultValue="1"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

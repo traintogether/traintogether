@@ -1,5 +1,27 @@
 package com.codepath.traintogether.activities;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,22 +31,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.codepath.traintogether.R;
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,6 +66,7 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
     private FirebaseUser user;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference mFirebaseDatabaseReference;
 
     private CallbackManager mCallbackManager;
 
@@ -188,6 +195,11 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
             btnFacebookLogin.setVisibility(View.GONE);
             btnFacebookSignout.setVisibility(View.VISIBLE);
             btnChat.setVisibility(View.VISIBLE);
+
+            mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+            addNewUser(user);
+
         } else {
             mStatusTextView.setText(R.string.signed_out);
             mDetailTextView.setText(null);
@@ -196,6 +208,21 @@ public class FacebookLoginActivity extends BaseActivity implements View.OnClickL
             btnFacebookSignout.setVisibility(View.GONE);
             btnChat.setVisibility(View.GONE);
         }
+    }
+
+    private void addNewUser(FirebaseUser firebaseUser) {
+        User user = new User();
+        user.emailId = firebaseUser.getEmail();
+        user.displayName = firebaseUser.getDisplayName();
+        user.uid = firebaseUser.getUid();
+
+        DatabaseReference reference = mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(user.getUid());
+        if (reference != null) {
+            reference.setValue(user);
+        } else {
+            mFirebaseDatabaseReference.child(Constants.USERS_CHILD).push().setValue(user);
+        }
+        TrainTogetherApplication.setCurrentUser(user);
     }
 
     @Override

@@ -30,4 +30,42 @@
     </string-array>
     <string name="title_activity_leader_board">LeaderBoardActivity</string>
     <string name="distance">Distance: --:--</string>
+    <string name="pref_user_profile">User Profile</string>
+    <string name="pref_user_name">Username</string>
+    <string name="pref_user_name_summary">Set your username</string>
+    <string name="pref_user_location">Location</string>
+    <string name="pref_user_location_summary">Set your location</string>
+    <string name="pref_user_setting">User Settings</string>
+    <string name="pref_marathon_type">Marathon Type</string>
+    <string name="pref_running_summary">Set the Marathon Type</string>
+    <string name="pref_user_running_level">Running Level</string>
+    <string name="pref_user_running_level_summary">Set your current running level</string>
+
+
+    <string-array name="marathonTypes">
+        <item name="1">5K</item>
+        <item name="2">10K</item>
+        <item name="3">Half Marathon</item>
+        <item name="4">Full Marathon</item>
+    </string-array>
+    <string-array name="marathonTypeValues">
+        <item name="1">1</item>
+        <item name="7">2</item>
+        <item name="30">3</item>
+        <item name="0">4</item>
+    </string-array>
+
+
+    <string-array name="userRunningLevel">
+        <item name="1">Beginner</item>
+        <item name="2">Intermediate</item>
+        <item name="3">Advanced</item>
+    </string-array>
+    <string-array name="userRunningLevelValues">
+        <item name="1">1</item>
+        <item name="2">2</item>
+        <item name="3">3</item>
+    </string-array>
+    <string name="title_activity_schedule">ScheduleActivity</string>
+
 </resources>

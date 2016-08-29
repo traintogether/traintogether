@@ -74,8 +74,19 @@
         </activity>
         <activity android:name=".activities.StatsActivity" />
         <activity android:name=".activities.TrackActivity" />
-
-        <activity android:name=".activities.EventDetailActivity"></activity>
+        <activity android:name=".activities.EventDetailActivity" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.codepath.traintogether.activities.MainActivity" />
+        </activity>
+        <activity android:name=".activities.RequestActivity" />
+        <activity
+            android:name=".activities.ScheduleActivity"
+            android:label="@string/title_activity_schedule"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

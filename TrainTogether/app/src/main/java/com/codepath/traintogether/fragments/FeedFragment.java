@@ -1,16 +1,6 @@
 package com.codepath.traintogether.fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import com.google.gson.Gson;
 
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.activities.EventDetailActivity;
@@ -22,10 +12,21 @@ import com.codepath.traintogether.utils.Utils;
 import com.codepath.traintogether.utils.client.ActiveClient;
 import com.codepath.traintogether.utils.client.ActiveRequest;
 import com.codepath.traintogether.utils.client.ActiveResponse;
-import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,10 @@ public class FeedFragment extends BaseFragment {
     Gson gson;
 
     String query = "running";
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
 
     ActiveClient client;
 

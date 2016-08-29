@@ -19,13 +19,22 @@
             android:icon="@drawable/common_ic_googleplayservices"
             android:title="Login" />
         <item
-            android:id="@+id/nav_discussion"
+            android:id="@+id/nav_requests"
             android:icon="@drawable/common_ic_googleplayservices"
-            android:title="Discussion" />
+            android:title="Requests" />
         <item
             android:id="@+id/nav_leaderboard"
             android:icon="@drawable/common_ic_googleplayservices"
             android:title="Leaderboard" />
+        <item
+            android:id="@+id/nav_preference"
+            android:icon="@drawable/common_ic_googleplayservices"
+            android:title="Preferences" />
+
+        <item
+            android:id="@+id/nav_schedule"
+            android:icon="@drawable/common_ic_googleplayservices"
+            android:title="Training Schedule" />
     </group>
 
     <item android:title="Sub items">

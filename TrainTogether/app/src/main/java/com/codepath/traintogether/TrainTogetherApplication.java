@@ -1,8 +1,9 @@
 package com.codepath.traintogether;
 
-import android.app.Application;
-
+import com.codepath.traintogether.models.User;
 import com.codepath.traintogether.utils.Constants;
+
+import android.app.Application;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -10,6 +11,16 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * Created by ameyapandilwar on 8/18/16 at 4:36 AM.
  */
 public class TrainTogetherApplication extends Application {
+
+    private static User currentUser = null;
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        TrainTogetherApplication.currentUser = currentUser;
+    }
 
     @Override
     public void onCreate() {
@@ -19,5 +30,11 @@ public class TrainTogetherApplication extends Application {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        setCurrentUser(null);
     }
 }
