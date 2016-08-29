@@ -73,6 +73,8 @@
                 android:value="com.codepath.traintogether.activities.MainActivity" />
         </activity>
         <activity android:name=".activities.StatsActivity" />
+        <activity android:name=".activities.TrackActivity" />
+
         <activity android:name=".activities.EventDetailActivity"></activity>
     </application>
 
