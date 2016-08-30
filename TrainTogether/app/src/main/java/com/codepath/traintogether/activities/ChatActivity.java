@@ -211,7 +211,7 @@ public class ChatActivity extends BaseActivity {
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         if (mFirebaseUser == null) {
-            startActivity(new Intent(this, FacebookLoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         } else {
             mUsername = mFirebaseUser.getDisplayName();
@@ -238,7 +238,7 @@ public class ChatActivity extends BaseActivity {
                 mFirebaseUser = null;
                 mUsername = Constants.ANONYMOUS;
                 mPhotoUrl = null;
-                startActivity(new Intent(this, FacebookLoginActivity.class));
+                startActivity(new Intent(this, LoginActivity.class));
                 return true;
             case R.id.fresh_config_menu:
                 fetchRemoteConfig();

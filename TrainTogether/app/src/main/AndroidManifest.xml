@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.SplashActivity"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+                android:name=".activities.MainActivity"
+                android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
 
         <service
             android:name=".firebase.MyFirebaseMessagingService"
@@ -49,7 +53,7 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity android:name=".activities.FacebookLoginActivity" />
+        <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.ChatActivity" />
         <activity
             android:name="com.facebook.CustomTabActivity"

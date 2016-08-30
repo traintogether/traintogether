@@ -1,5 +1,11 @@
 package com.codepath.traintogether.activities;
 
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.fragments.FeedFragment;
+import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
+import com.codepath.traintogether.models.FilterSettings;
+import com.codepath.traintogether.utils.StylishTabLayout;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,12 +25,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.fragments.FeedFragment;
-import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
-import com.codepath.traintogether.models.FilterSettings;
-import com.codepath.traintogether.utils.StylishTabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +122,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.invite_menu:
-                startActivity(new Intent(this, FacebookLoginActivity.class));
+                startActivity(new Intent(this, LoginActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -153,7 +153,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
                 startActivity(new Intent(MainActivity.this, ChatActivity.class));
                 break;
             case R.id.nav_login:
-                startActivity(new Intent(MainActivity.this, FacebookLoginActivity.class));
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 break;
             case R.id.nav_leaderboard:
                 startActivity(new Intent(MainActivity.this, LeaderBoardActivity.class));
