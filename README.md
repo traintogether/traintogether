@@ -47,10 +47,16 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 <img src='walkthroughs/Leaderboard_SP1.gif' />
 <br/>
 
-2. Group formation
+3. Group formation
 <br/>
 <img src='walkthroughs/demo_groups.gif' />
 <br/>
+
+4. Preferences & Training Schedule
+<br/>
+<img src='https://github.com/traintogether/traintogether/blob/master/Preferences%26Schedule.gif' />
+<br/>
+
 
 ## Wireframes:
 1. Home Navigation
