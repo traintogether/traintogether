@@ -8,19 +8,19 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 ### The following **required** user stories/features are:
 
 * [x]	User can **view upcoming events and other’s participation** in the home feed
-* [ ]	User can **view training session statistics**
-  * [ ] User is displayed the statistics for each session and is provided with visualizations for group as well as individual statistics
-* [ ]	User can **view profile and update preferences**
+* [x]	User can **view training session statistics**
+  * [x] User is displayed the statistics for each session and is provided with visualizations for group as well as individual statistics
+* [x]	User can **view profile and update preferences**
 * [x]	User can **chat with other people in the group**
-* [ ]	User can **view the leaderboard**
-* [ ]	User can **start a run** and see current run map along with statistics
+* [x]	User can **view the leaderboard**
+* [x]	User can **start a run** and see current run map along with statistics
 	* [ ] Optional: Voice information on run events
 * [x]	User can request to join groups
 * [x]	Any user is able to view upcoming events and look around before joining a event which will be allowed after account creation
 
 ### The following **optional** identified user stories/features are:
 * [ ]	User can **invite friends and join events to train together**
-* [ ]	User can **view training schedules**
+* [x]	User can **view training schedules**
     * [ ] User is displayed the provided with a training schedule and can modify as per preference
     * [ ] User get notification on runs based on training schedules
 * [x]	User can search marathons based on a **query and any distance**
@@ -35,6 +35,11 @@ Planning to run a marathon is not an easy task. It involves meticulous planning,
 * [ ]	**Stretch**: Monetize the app using trainers available ads and local sporting goods store ads 
 * [ ]	**Stretch**: Integrate Spotify music
 * [ ]	**Stretch**: Google watch app 
+
+
+## Walkthrough (Sprint 2):
+[Watch Sprint 2 demo on Youtube](https://youtu.be/ykyG7HuJ9K0)
+
 
 ## Walkthroughs (Sprint 1):
 1. Upcoming Events Feed / Login / Chat 
