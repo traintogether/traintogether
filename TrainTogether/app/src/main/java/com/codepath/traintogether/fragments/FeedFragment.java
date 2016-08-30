@@ -84,7 +84,7 @@ public class FeedFragment extends BaseFragment {
         rvEvents.setAdapter(adapter);
 
         rvEvents.setHasFixedSize(true);
-        rvEvents.addItemDecoration(new ItemSpaceDecoration(5));
+        rvEvents.addItemDecoration(new ItemSpaceDecoration(10));
         rvEvents.setLayoutManager(new LinearLayoutManager(context));
 
         ItemClickSupport.addTo(rvEvents).setOnItemClickListener((recyclerView, position, v) -> {

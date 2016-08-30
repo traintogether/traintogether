@@ -1,9 +1,11 @@
 package com.codepath.traintogether.activities;
 
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
 import com.codepath.traintogether.fragments.FeedFragment;
 import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
 import com.codepath.traintogether.models.FilterSettings;
+import com.codepath.traintogether.models.User;
 import com.codepath.traintogether.utils.StylishTabLayout;
 
 import android.content.Context;
@@ -27,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,24 +68,32 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
         }
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-//        if (viewPager != null) {
-//            setupViewPager(viewPager);
-//        }
         StylishTabLayout tabLayout = (StylishTabLayout) findViewById(R.id.tabs);
+
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.flFeed);
+
+        User currentUser = TrainTogetherApplication.getCurrentUser();
+        if (currentUser != null && currentUser.getGroups().size() > 0) {
+            if (viewPager != null) {
+                setupViewPager(viewPager);
+            }
+            tabLayout.setVisibility(View.VISIBLE);
+            frameLayout.setVisibility(View.GONE);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.VISIBLE);
+
+            fragment.setArguments(getIntent().getExtras());
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.flFeed, fragment);
+            fragmentTransaction.commit();
+        }
         tabLayout.setupWithViewPager(viewPager);
-
-        fragment.setArguments(getIntent().getExtras());
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.flFeed, fragment);
-        fragmentTransaction.commit();
-
-        tabLayout.setVisibility(View.GONE);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> showFilterSettingsDialog());
-
 
         preferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
@@ -145,8 +156,9 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(fragment, "Feed");
-//        adapter.addFragment(new FeedFragment(), "Category 2");
+        adapter.addFragment(new FeedFragment(), "Feed");
+        adapter.addFragment(new FeedFragment(), "Stats");
+        adapter.addFragment(new ChatFragment(), "Chat");
         viewPager.setAdapter(adapter);
     }
 
@@ -160,9 +172,9 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
     private void selectDrawerItem(MenuItem menuItem) {
         switch(menuItem.getItemId()) {
-            case R.id.nav_chat:
-                startActivity(new Intent(MainActivity.this, ChatActivity.class));
-                break;
+//            case R.id.nav_chat:
+//                startActivity(new Intent(MainActivity.this, ChatActivity.class));
+//                break;
             case R.id.nav_login:
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 break;

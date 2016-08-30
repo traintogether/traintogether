@@ -14,7 +14,6 @@ import com.codepath.traintogether.models.User;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventDetailActivity extends AppCompatActivity {
+public class EventDetailActivity extends BaseActivity {
 
     private static final String TAG = "EventDetailActivity";
     @BindView(R.id.tvEventName)
