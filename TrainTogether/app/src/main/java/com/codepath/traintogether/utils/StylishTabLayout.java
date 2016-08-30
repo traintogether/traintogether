@@ -36,11 +36,13 @@ public class StylishTabLayout extends TabLayout {
 
         PagerAdapter adapter = viewPager.getAdapter();
 
-        for (int i = 0, count = adapter.getCount(); i < count; i++) {
-            Tab tab = this.newTab();
-            this.addTab(tab.setText(adapter.getPageTitle(i)));
-            AppCompatTextView view = (AppCompatTextView) ((ViewGroup) slidingTabStrip.getChildAt(i)).getChildAt(1);
-            view.setTypeface(typeface);
+        if (adapter != null) {
+            for (int i = 0, count = adapter.getCount(); i < count; i++) {
+                Tab tab = this.newTab();
+                this.addTab(tab.setText(adapter.getPageTitle(i)));
+                AppCompatTextView view = (AppCompatTextView) ((ViewGroup) slidingTabStrip.getChildAt(i)).getChildAt(1);
+                view.setTypeface(typeface);
+            }
         }
     }
 }

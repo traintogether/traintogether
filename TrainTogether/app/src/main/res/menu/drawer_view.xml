@@ -15,10 +15,6 @@
             android:icon="@drawable/common_ic_googleplayservices"
             android:title="Stats" />
         <item
-            android:id="@+id/nav_login"
-            android:icon="@drawable/common_ic_googleplayservices"
-            android:title="Login" />
-        <item
             android:id="@+id/nav_requests"
             android:icon="@drawable/common_ic_googleplayservices"
             android:title="Requests" />
@@ -26,10 +22,6 @@
             android:id="@+id/nav_leaderboard"
             android:icon="@drawable/common_ic_googleplayservices"
             android:title="Leaderboard" />
-        <item
-            android:id="@+id/nav_preference"
-            android:icon="@drawable/common_ic_googleplayservices"
-            android:title="Preferences" />
 
         <item
             android:id="@+id/nav_schedule"
@@ -37,14 +29,16 @@
             android:title="Training Schedule" />
     </group>
 
-    <item android:title="Sub items">
+    <item android:title="User">
         <menu>
             <item
+                android:id="@+id/nav_login"
                 android:icon="@drawable/common_ic_googleplayservices"
-                android:title="Sub item 1" />
+                android:title="Login" />
             <item
+                android:id="@+id/nav_preference"
                 android:icon="@drawable/common_ic_googleplayservices"
-                android:title="Sub item 2" />
+                android:title="Preferences" />
         </menu>
     </item>
 
