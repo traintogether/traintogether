@@ -2,6 +2,7 @@ package com.codepath.traintogether.activities;
 
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.fragments.ChatFragment;
 import com.codepath.traintogether.fragments.FeedFragment;
 import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
 import com.codepath.traintogether.models.FilterSettings;

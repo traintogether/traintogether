@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.TrainTogetherApplication;
@@ -211,6 +212,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         user.emailId = firebaseUser.getEmail();
         user.displayName = firebaseUser.getDisplayName();
         user.uid = firebaseUser.getUid();
+
+        FirebaseMessaging.getInstance().subscribeToTopic(String.format("user_%s", user.uid));
 
         Query reference = mFirebaseDatabaseReference.child(Constants.USERS_CHILD).orderByChild("uid").equalTo(user.getUid());
         if (reference == null) {

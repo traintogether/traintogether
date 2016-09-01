@@ -1,4 +1,4 @@
-package com.codepath.traintogether.activities;
+package com.codepath.traintogether.fragments;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.auth.FirebaseAuth;
@@ -11,7 +11,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.bumptech.glide.Glide;
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.TrainTogetherApplication;
-import com.codepath.traintogether.fragments.BaseFragment;
+import com.codepath.traintogether.activities.LoginActivity;
 import com.codepath.traintogether.models.ChatMessage;
 import com.codepath.traintogether.models.User;
 import com.codepath.traintogether.utils.Constants;
@@ -100,7 +100,7 @@ public class ChatFragment extends BaseFragment {
 //        setContentView(R.layout.activity_chat);
 //        ButterKnife.bind(this);
 
-        View v = inflater.inflate(R.layout.activity_chat, container, false);
+        View v = inflater.inflate(R.layout.fragment_chat, container, false);
         unbinder = ButterKnife.bind(this, v);
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
