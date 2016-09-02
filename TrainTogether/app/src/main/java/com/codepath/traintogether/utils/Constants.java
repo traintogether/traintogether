@@ -13,6 +13,8 @@ public class Constants {
     public static final String MESSAGES_CHILD = "messages";
     public static final String GROUPS_CHILD = "groups";
     public static final String USER_RUNS_CHILD = "runs";
+    public static final String GROUP_STAT_CHILD = "group_statistics";
+
     public static final int REQUEST_INVITE = 1;
 
 
@@ -32,4 +34,7 @@ public class Constants {
 
     public static final String REQUESTS_CHILD = "requests";
     public static final String USERS_CHILD = "users";
+
+    //error codes
+    public static final int RESULT_NO_USER = 3000;
 }

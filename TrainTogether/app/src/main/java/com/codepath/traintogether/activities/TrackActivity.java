@@ -37,6 +37,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.parceler.Parcels;
+
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
@@ -49,7 +51,7 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
 
     private static final int REQUEST_OAUTH = 1;
     private static final String AUTH_PENDING = "auth_state_pending";
-    private static final String TAG = "StatsActivity";
+    private static final String TAG = "TrackActivity";
     private boolean authInProgress = false;
     private GoogleApiClient mApiClient;
     OnDataPointListener mSpeedListener;
@@ -59,6 +61,7 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
 
     private static float distance = 0;
     private static Double calorie;
+    private Run finalRun;
 
     private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
@@ -477,16 +480,25 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
     private void saveToDB(){
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        Intent intent = new Intent();
         if (currentUser != null) {
             //push the current run to user child
             mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
             String key = mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(currentUser.getUid()).child(Constants.USER_RUNS_CHILD).push().getKey();
-            Run run = new Run(key, distance, calorie);
-            mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(currentUser.getUid()).child(Constants.USER_RUNS_CHILD).child(key).setValue(run);
-
-            //recalculate group statistics and update db
-            
+            finalRun = new Run(key, distance, calorie);
+            mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(currentUser.getUid()).child(Constants.USER_RUNS_CHILD).child(key).setValue(finalRun);
+            Log.e("run_key1", finalRun.getKey());
+            intent.putExtra("run", Parcels.wrap(finalRun));
+            setResult(RESULT_OK, intent);
+        }else{
+            setResult(Constants.RESULT_NO_USER, null);
         }
+        Run run = (Run) Parcels.unwrap(intent.getParcelableExtra("run"));
+        Log.e("run_key2", run.getKey());
+
+
+        finish();
+
     }
 
 }

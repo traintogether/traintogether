@@ -1,9 +1,9 @@
 package com.codepath.traintogether;
 
+import android.app.Application;
+
 import com.codepath.traintogether.models.User;
 import com.codepath.traintogether.utils.Constants;
-
-import android.app.Application;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 

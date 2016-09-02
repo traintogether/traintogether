@@ -1,12 +1,20 @@
 package com.codepath.traintogether.models;
 
+import org.parceler.Parcel;
+
 /**
- * Created by ameyapandilwar on 8/26/16.
+ * Created by santoshag on 8/26/16.
  */
+
+@Parcel
 public class Run {
 
-    public String key;
-    public Float distance;
+    String key;
+    Float distance;
+    Double calories;
+
+    public Run() {
+    }
 
     public Run(String key, Float distance, Double calories) {
         this.key = key;
@@ -14,15 +22,15 @@ public class Run {
         this.calories = calories;
     }
 
-    public Double calories;
-
     public String getKey() {
         return key;
     }
 
-
-    public Run() {
-
+    public Float getDistance() {
+        return distance;
     }
 
+    public Double getCalories() {
+        return calories;
+    }
 }
