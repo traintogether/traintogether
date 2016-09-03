@@ -1,9 +1,11 @@
 package com.codepath.traintogether;
 
-import android.app.Application;
-
 import com.codepath.traintogether.models.User;
 import com.codepath.traintogether.utils.Constants;
+
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import android.app.Application;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -25,6 +27,9 @@ public class TrainTogetherApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        JodaTimeAndroid.init(this);
+
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath(Constants.DEFAULT_FONT_ASSET_PATH)
                 .setFontAttrId(R.attr.fontPath)

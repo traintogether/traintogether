@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import com.bumptech.glide.Glide;
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.adapters.GroupsAdapter;
 import com.codepath.traintogether.models.Group;
@@ -14,12 +15,12 @@ import com.codepath.traintogether.models.User;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -29,18 +30,19 @@ import butterknife.ButterKnife;
 public class EventDetailActivity extends BaseActivity {
 
     private static final String TAG = "EventDetailActivity";
-    @BindView(R.id.tvEventName)
-    TextView tvEventName;
+//    @BindView(R.id.tvEventName)
+//    TextView tvEventName;
 
     @BindView(R.id.lvGroups)
     ListView lvGroups;
+
+    @BindView(R.id.ivBackdrop)
+    ImageView ivBackdrop;
 
     ArrayList<Group> groups;
     private DatabaseReference mFirebaseDatabaseReference;
 
     ArrayAdapter groupsAdapter;
-
-//    private List<Group> mGroups = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,20 @@ public class EventDetailActivity extends BaseActivity {
         Intent intent = getIntent();
         String eventName = intent.getStringExtra("eventName");
         String eventId = intent.getStringExtra("eventId");
-        tvEventName.setText(eventName);
+        String eventLogoUrlAdr = intent.getStringExtra("eventLogoUrlAdr");
+//        tvEventName.setText(eventName);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(eventName);
+
+        loadBackdrop(eventLogoUrlAdr);
+
+        setTitle(eventName);
 
         groups = new ArrayList<>();
 
@@ -73,8 +88,6 @@ public class EventDetailActivity extends BaseActivity {
 
                 }
                 groupsAdapter.add(group);
-
-                //groupsAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -97,15 +110,14 @@ public class EventDetailActivity extends BaseActivity {
 
         qry.addChildEventListener(childEventListener);
 
-//        groupsAdapter = new GroupsAdapter(this, mFirebaseDatabaseReference);
-
-
-        lvGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String group = (String) adapterView.getItemAtPosition(i);
-                Log.i(TAG, group);
-            }
+        lvGroups.setOnItemClickListener((adapterView, view, i, l) -> {
+            String group = (String) adapterView.getItemAtPosition(i);
+            Log.i(TAG, group);
         });
+    }
+
+    private void loadBackdrop(String eventLogoUrlAdr) {
+        ivBackdrop.setImageResource(0);
+        Glide.with(this).load(eventLogoUrlAdr).into(ivBackdrop);
     }
 }
