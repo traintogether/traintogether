@@ -48,10 +48,12 @@ public class Utils {
         Period period = new Period(now, dateTime, PeriodType.dayTime());
 
         PeriodFormatter formatter = new PeriodFormatterBuilder()
-                .appendDays().appendSuffix(" day ", " days ")
+                .appendDays().appendSuffix(" day", " days")
                 .toFormatter();
 
-        return formatter.print(period);
+        String result = formatter.print(period);
+
+        return result.contains("-") ? String.format("%s ago", result.replace("-", "")) : String.format("in %s", result);
     }
 
     public static String getEventDate(String rawJsonDate) {
