@@ -92,6 +92,7 @@ public class FeedFragment extends BaseFragment {
             Intent intent = new Intent(getContext(), EventDetailActivity.class);
             intent.putExtra("eventId", event.getAssetGuid());
             intent.putExtra("eventName", event.getAssetName());
+            intent.putExtra("eventLogoUrlAdr", event.getLogoUrlAdr());
             startActivity(intent);
         });
     }
