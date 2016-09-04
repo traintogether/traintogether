@@ -7,7 +7,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-import com.bumptech.glide.Glide;
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.adapters.GroupsAdapter;
 import com.codepath.traintogether.models.Group;
@@ -54,6 +53,7 @@ public class EventDetailActivity extends BaseActivity {
         String eventName = intent.getStringExtra("eventName");
         String eventId = intent.getStringExtra("eventId");
         String eventLogoUrlAdr = intent.getStringExtra("eventLogoUrlAdr");
+        String cityName = intent.getStringExtra("cityName");
 //        tvEventName.setText(eventName);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -64,7 +64,7 @@ public class EventDetailActivity extends BaseActivity {
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(eventName);
 
-        loadBackdrop(eventLogoUrlAdr);
+        loadBackdrop(cityName);
 
         setTitle(eventName);
 
@@ -116,8 +116,18 @@ public class EventDetailActivity extends BaseActivity {
         });
     }
 
-    private void loadBackdrop(String eventLogoUrlAdr) {
+    private void loadBackdrop(String cityName) {
         ivBackdrop.setImageResource(0);
-        Glide.with(this).load(eventLogoUrlAdr).into(ivBackdrop);
+
+        if (cityName.equalsIgnoreCase("boston")) {
+            ivBackdrop.setImageResource(R.drawable.boston);
+        } else if (cityName.equalsIgnoreCase("san francisco")) {
+            ivBackdrop.setImageResource(R.drawable.san_francisco);
+        } else if (cityName.equalsIgnoreCase("san diego")) {
+            ivBackdrop.setImageResource(R.drawable.san_diego);
+        } else {
+            ivBackdrop.setImageResource(R.drawable.default_marathon);
+        }
     }
+
 }

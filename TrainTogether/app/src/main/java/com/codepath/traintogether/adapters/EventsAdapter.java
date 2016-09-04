@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.bumptech.glide.Glide;
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.TrainTogetherApplication;
 import com.codepath.traintogether.models.Group;
@@ -23,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -54,7 +52,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
             ibJoin.setOnClickListener(v -> {
                 Result event = mEvents.get(getLayoutPosition());
-                Toast.makeText(mContext, event.getAssetName(), Toast.LENGTH_SHORT).show();
 
                 mAuth = FirebaseAuth.getInstance();
                 //loggedUser = fbActivity.getUser();
@@ -120,7 +117,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             holder.tvLocation.setText("");
         }
         holder.tvTime.setText(Utils.getDaysToEvent(event.getActivityStartDate()));
-        Glide.with(getContext()).load(event.getLogoUrlAdr()).into(holder.ivPoster);
+
+        loadThumbnail(holder, place.getCityName());
+    }
+
+    private void loadThumbnail(ViewHolder holder, String cityName) {
+        if (cityName.equalsIgnoreCase("boston")) {
+            holder.ivPoster.setImageResource(R.drawable.boston);
+        } else if (cityName.equalsIgnoreCase("san francisco")) {
+            holder.ivPoster.setImageResource(R.drawable.san_francisco);
+        } else if (cityName.equalsIgnoreCase("san diego")) {
+            holder.ivPoster.setImageResource(R.drawable.san_diego);
+        } else {
+            holder.ivPoster.setImageResource(R.drawable.default_marathon);
+        }
     }
 
     @Override
