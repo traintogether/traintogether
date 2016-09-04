@@ -95,6 +95,16 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        //reset all fields
+        distance = 0;
+    }
+
+
+
+
+    @Override
     protected void onStart() {
         super.onStart();
         mApiClient.connect();
@@ -487,16 +497,11 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
             String key = mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(currentUser.getUid()).child(Constants.USER_RUNS_CHILD).push().getKey();
             finalRun = new Run(key, distance, calorie);
             mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(currentUser.getUid()).child(Constants.USER_RUNS_CHILD).child(key).setValue(finalRun);
-            Log.e("run_key1", finalRun.getKey());
             intent.putExtra("run", Parcels.wrap(finalRun));
             setResult(RESULT_OK, intent);
         }else{
             setResult(Constants.RESULT_NO_USER, null);
         }
-        Run run = (Run) Parcels.unwrap(intent.getParcelableExtra("run"));
-        Log.e("run_key2", run.getKey());
-
-
         finish();
 
     }

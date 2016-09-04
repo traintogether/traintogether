@@ -37,4 +37,19 @@ public class Constants {
 
     //error codes
     public static final int RESULT_NO_USER = 3000;
+
+
+    //ArckStackViewProperty codes
+    public static final int APSV_SIZE = 4000;
+    public static final int APSV_SHADOW_DISTANCE = 4001;
+    public static final int APSV_DRAW_WIDTH= 4002;
+    public static final int APSV_MODEL_OFFSET = 4003;
+    public static final int APSV_START_ANGLE = 4004;
+    public static final int APSV_SWEEP_ANGLE = 4005;
+    public static final int APSV_ANIMATION_DURATION = 4006;
+    public static final int APSV_SHADOW_ANGLE = 4007;
+    public static final int APSV_SHADOW_RADIUS = 4008;
+
+
+
 }
