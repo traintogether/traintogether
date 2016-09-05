@@ -39,6 +39,13 @@ public class Constants {
     public static final int RESULT_NO_USER = 3000;
 
 
+    //pager type and chart type
+    public static final int VIEW_PAGER_GROUP_STAT = 3500;
+    public static final int VIEW_PAGER_USER_STAT = 3501;
+    public static final int CHART_LINE = 3502;
+    public static final int CHART_APSV = 3503;
+
+
     //ArckStackViewProperty codes
     public static final int APSV_SIZE = 4000;
     public static final int APSV_SHADOW_DISTANCE = 4001;

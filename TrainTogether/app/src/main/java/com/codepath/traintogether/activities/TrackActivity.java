@@ -6,7 +6,9 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.helpers.AddLocationLayer;
+import com.codepath.traintogether.helpers.AddMarkerOnLongClick;
+import com.codepath.traintogether.helpers.AddToMap;
+import com.codepath.traintogether.helpers.LogLocation;
+import com.codepath.traintogether.helpers.MoveToLocationFirstTime;
+import com.codepath.traintogether.helpers.OnActivity;
+import com.codepath.traintogether.helpers.OnClient;
+import com.codepath.traintogether.helpers.OnMap;
+import com.codepath.traintogether.helpers.OnPermission;
+import com.codepath.traintogether.helpers.PlaceManager;
+import com.codepath.traintogether.helpers.TrackLocation;
 import com.codepath.traintogether.models.Run;
 import com.codepath.traintogether.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
@@ -32,10 +45,15 @@ import com.google.android.gms.fitness.request.DataSourcesRequest;
 import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.result.DataSourcesResult;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.maps.android.ui.IconGenerator;
 
 import org.parceler.Parcels;
 
@@ -51,7 +69,7 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
 
     private static final int REQUEST_OAUTH = 1;
     private static final String AUTH_PENDING = "auth_state_pending";
-    private static final String TAG = "TrackActivity";
+    public static final String TAG = "TrackActivity";
     private boolean authInProgress = false;
     private GoogleApiClient mApiClient;
     OnDataPointListener mSpeedListener;
@@ -75,7 +93,10 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
     TextView tvDistance;
     @BindView(R.id.tvCalorie)
     TextView tvCalorie;
-
+    @BindView(R.id.fabPause)
+    FloatingActionButton fabPause;
+    @BindView(R.id.fabStop)
+    FloatingActionButton fabStop;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +113,101 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        setupMapview(savedInstanceState);
+
+        setupFab();
+
     }
+
+    private void setupMapview(Bundle savedInstanceState) {
+
+        AddToMap adder = new AddToMap(getIconGenerator());
+        PlaceManager manager = new PlaceManager(adder);
+        AddMarkerOnLongClick click = new AddMarkerOnLongClick(this, manager);
+
+        AddLocationLayer layer = new AddLocationLayer();
+        MoveToLocationFirstTime move = new MoveToLocationFirstTime(savedInstanceState);
+        TrackLocation track = new TrackLocation(getLocationRequest(), new LogLocation());
+
+        new OnActivity.Builder(this, manager, track).build();
+
+        FragmentManager fm = getSupportFragmentManager();
+        SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
+        if (fragment != null) {
+            getMapAsync(fragment, new OnMap(manager, click, layer, move, track));
+        }
+
+        GoogleApiClient client = getGoogleApiClient();
+        addConnectionCallbacks(client, new OnClient(client, move, track));
+
+        int requestCode = 1001;
+        String permission = Manifest.permission.ACCESS_FINE_LOCATION;
+        OnPermission.Request location = new OnPermission.Request(requestCode, permission, layer, move, track);
+        OnPermission onPermission = new OnPermission.Builder(this).build();
+        onPermission.beginRequest(location);
+    }
+
+    private void setupFab() {
+        fabPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        fabStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                unregisterFitnessDataListener(mSpeedListener);
+                unregisterFitnessDataListener(mLocationListener);
+                unregisterFitnessDataListener(mDistanceListener);
+                saveToDB();
+
+            }
+        });
+    }
+
+    // TODO Build IconGenerator
+    // Set IconGenerator attributes.
+    // Use the MarkerFont text appearance style.
+    // Use it to build custom markers.
+    private IconGenerator getIconGenerator() {
+        IconGenerator generator = new IconGenerator(this);
+        generator.setStyle(IconGenerator.STYLE_GREEN);
+        generator.setTextAppearance(R.style.MarkerFont);
+        return generator;
+    }
+
+    // TODO Build LocationRequest
+    // Set priority, interval, and fastest interval.
+    // Use it to start location updates.
+    private LocationRequest getLocationRequest() {
+        LocationRequest request = new LocationRequest();
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setInterval(10000);        // 10 seconds
+        request.setFastestInterval(5000);  // 5 seconds
+        return request;
+    }
+
+    // TODO Build GoogleApiClient
+    // Enable auto manage and add LocationServices API
+    private GoogleApiClient getGoogleApiClient() {
+        return new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, null)
+                .addApi(LocationServices.API).build();
+    }
+
+    // TODO Get the map asynchronously
+    private void getMapAsync(SupportMapFragment fragment, OnMapReadyCallback callback) {
+        fragment.getMapAsync(callback);
+    }
+
+    // TODO Add callbacks to the GoogleApiClient
+    private void addConnectionCallbacks(GoogleApiClient client, GoogleApiClient.ConnectionCallbacks callbacks) {
+        client.registerConnectionCallbacks(callbacks);
+    }
+
 
     @Override
     protected void onResume() {
@@ -448,13 +563,7 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
         outState.putBoolean(AUTH_PENDING, authInProgress);
     }
 
-    public void stopActivityTracking(View view) {
-        unregisterFitnessDataListener(mSpeedListener);
-        unregisterFitnessDataListener(mLocationListener);
-        unregisterFitnessDataListener(mDistanceListener);
-        saveToDB();
 
-    }
 
     /**
      * Unregister the listener with the Sensors API.

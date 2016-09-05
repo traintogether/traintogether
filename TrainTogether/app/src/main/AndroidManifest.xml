@@ -8,6 +8,11 @@
     //required for Google Fit APIs
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+
+    <provider android:authorities="com.facebook.app.FacebookContentProvider284489345258643"
+        android:name="com.facebook.FacebookContentProvider"
+        android:exported="true" />
+
     <application
         android:name=".TrainTogetherApplication"
         android:allowBackup="true"
@@ -15,6 +20,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/secret_maps_api_key" />
+
         <activity
             android:name=".activities.SplashActivity"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity">

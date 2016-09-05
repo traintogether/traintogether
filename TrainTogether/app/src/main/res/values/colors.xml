@@ -6,6 +6,8 @@
     <color name="colorBackgroundDark">#272530</color>
     <color name="colorPrimaryText">#FFFFFF</color>
     <color name="transparentColor">#00000000</color>
+    <color name="pageIndicatorColor">#524e65</color>
+    <color name="currentPageIndicatorColor">#B2FF59</color>
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
 </resources>

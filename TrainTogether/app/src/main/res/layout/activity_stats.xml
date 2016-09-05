@@ -1,185 +1,97 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorBackgroundDark"
 
-        tools:context="com.codepath.traintogether.activities.StatsActivity">
-
-        <FrameLayout
-            android:id="@+id/flArcStack"
-            android:padding="@dim"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <com.gigamole.library.ArcProgressStackView
-                android:id="@+id/apsv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                app:apsv_model_bg_enabled="false"
-                app:apsv_preview_colors="@array/colorful_waves"
-                app:apsv_rounded="true"
-                app:apsv_shadowed="false" />
-        </FrameLayout>
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/flArcStack"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <LinearLayout
-                android:id="@+id/llGroupStatItem1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <View
-                    android:id="@+id/vDotItem1"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/dot"
-                    android:padding="10dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/tvRuns"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Runs"
-                        android:textColor="@color/colorPrimaryText"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="24"
-                        android:textColor="@color/colorPrimaryText"
-                        android:textSize="16sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llGroupStatItem2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <View
-                    android:id="@+id/vDotItem2"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/dot"
-                    android:padding="10dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/tvDistance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Distance"
-                        android:textColor="@color/colorPrimaryText"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="256"
-                        android:textColor="@color/colorPrimaryText"
-                        android:textSize="16sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llGroupStatItem3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <View
-                    android:id="@+id/vDotItem3"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/dot"
-                    android:padding="10dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/tvCalories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Calories"
-                        android:textColor="@color/colorPrimaryText"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2046"
-                        android:textColor="@color/colorPrimaryText"
-                        android:textSize="16sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/lcUser"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="50dp"
-            android:padding="0dp"
-            android:layout_below="@id/flArcStack" />
-
-        <Button
-            android:id="@+id/btnStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/lcUser"
-            android:layout_marginTop="100dp"
-            android:onClick="startActivityTracking"
-            android:text="Start Run" />
-
-        <TextView
-            android:id="@+id/tvStats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/btnStart"
-            android:text="New Text" />
+            android:layout_height="match_parent"
+            android:background="@color/colorBackgroundDark"
+            android:orientation="vertical">
 
 
-    </RelativeLayout>
-</ScrollView>
+            <LinearLayout
+                android:id="@+id/llCharts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="20dp">
 
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vpGroupStatsPager"
+                    android:layout_width="fill_parent"
+                    android:layout_height="250dp"
+                    android:background="#333333" />
 
+                <com.pixelcan.inkpageindicator.InkPageIndicator
+                    android:id="@+id/iGroupStat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:animationDuration="320"
+                    app:currentPageIndicatorColor="@color/currentPageIndicatorColor"
+                    app:dotDiameter="6dp"
+                    app:dotGap="8dp"
+                    app:pageIndicatorColor="@color/pageIndicatorColor" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/transparentColor"></View>
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vpUserStatsPager"
+                    android:layout_width="fill_parent"
+                    android:layout_height="250dp"
+                    android:background="#333333" />
+
+                <com.pixelcan.inkpageindicator.InkPageIndicator
+                    android:id="@+id/iUserStat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorBackgroundDark"
+                    app:animationDuration="320"
+                    app:currentPageIndicatorColor="@color/currentPageIndicatorColor"
+                    app:dotDiameter="6dp"
+                    app:dotGap="8dp"
+                    app:pageIndicatorColor="@color/pageIndicatorColor" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="80dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/transparentColor"></View>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvStats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/llCharts"
+                android:text="New Text" />
+        </LinearLayout>
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabStartRun"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="16dp"
+        android:scaleType="center"
+        android:src="@drawable/running"
+        app:backgroundTint="@color/colorAccent"
+        app:fabSize="normal"
+        app:layout_anchorGravity="bottom|right|end"
+        app:layout_behavior="com.codepath.traintogether.decorators.ScrollAwareFABBehavior" />
+</android.support.design.widget.CoordinatorLayout>

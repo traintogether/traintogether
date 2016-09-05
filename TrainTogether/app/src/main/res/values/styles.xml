@@ -55,4 +55,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="ShareButtonTheme" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+    <style name="MarkerFont" parent="@android:style/TextAppearance.Medium.Inverse" />
+
+
 </resources>
