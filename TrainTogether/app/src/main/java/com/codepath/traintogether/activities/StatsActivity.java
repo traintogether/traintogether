@@ -79,7 +79,7 @@ public class StatsActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK && requestCode == 1) {
                 Run run = Parcels.unwrap(data.getParcelableExtra("run"));
-                if (run != null) {
+                if (run != null && run.getDistance() != 0 && run.getCalories() != 0) {
 
 //                    setUpStats();
                     //first run in thr group
