@@ -10,4 +10,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="dual_fab_margin">16dp</dimen>
 
+    <dimen name="detail_backdrop_height">256dp</dimen>
 </resources>

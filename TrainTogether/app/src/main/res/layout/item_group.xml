@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <TextView
-        android:id="@+id/tvGroupId"
-        android:layout_width="wrap_content"
+<android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="group id" />
-    <TextView
-        android:id="@+id/tvUserNames"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="users" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Join"
-        android:id="@+id/btnJoin"
-        android:textAllCaps="false"/>
-</LinearLayout>
+        android:background="#FFFF"
+        card_view:cardCornerRadius="4dp">
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <TextView
+                android:id="@+id/tvGroupId"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="group id"/>
+        <TextView
+                android:id="@+id/tvUserNames"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvGroupId"
+                android:layout_marginTop="10dp"
+                android:text="users"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_add_to_photos_black_24dp"
+                android:text="Join"
+                android:id="@+id/btnJoin"
+                android:textAllCaps="false"
+                android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

@@ -10,4 +10,7 @@
     <color name="currentPageIndicatorColor">#B2FF59</color>
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
+
+    <color name="overlay">#66000000</color>
+    <color name="overlay_text">#FFFFFF</color>
 </resources>

@@ -1,14 +1,5 @@
 package com.codepath.traintogether.activities;
 
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.TrainTogetherApplication;
-import com.codepath.traintogether.fragments.ChatFragment;
-import com.codepath.traintogether.fragments.FeedFragment;
-import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
-import com.codepath.traintogether.models.FilterSettings;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.utils.StylishTabLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,11 +17,30 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.fragments.ChatFragment;
+import com.codepath.traintogether.fragments.FeedFragment;
+import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
+import com.codepath.traintogether.models.FilterSettings;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+import com.codepath.traintogether.utils.StylishTabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +58,10 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
     FeedFragment fragment = new FeedFragment();
 
+    private FirebaseUser user;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference mFirebaseDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +77,18 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = firebaseAuth -> {
+            user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                checkCurrentUser(user.getUid());
+                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+            } else {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+            }
+        };
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
@@ -74,6 +100,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.flFeed);
 
         User currentUser = TrainTogetherApplication.getCurrentUser();
+
         if (currentUser != null && currentUser.getGroups().size() > 0) {
             if (viewPager != null) {
                 setupViewPager(viewPager);
@@ -260,6 +287,47 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+    }
+
+    private void checkCurrentUser(String uId) {
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        Query reference = mFirebaseDatabaseReference.child(Constants.USERS_CHILD).orderByChild("uid").equalTo(uId);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    try {
+                        User u = snapshot.getValue(User.class);
+                        TrainTogetherApplication.setCurrentUser(u);
+                    }catch (Exception e){
+                        Log.d("DEBUG", e.getMessage());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
 }

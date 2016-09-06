@@ -50,7 +50,7 @@ public class GroupsAdapter extends ArrayAdapter<Group> {
         mAuth = FirebaseAuth.getInstance();
         loggedUser = mAuth.getCurrentUser();
         for(User user: group.users){
-            sb.append(user.getEmailId()).append(" ");
+            sb.append(user.getEmailId()).append("\n");
             //current user cannot join himslef to a group
             if(user.getEmailId() == loggedUser.getEmail()){
                 btnJoin.setEnabled(false);

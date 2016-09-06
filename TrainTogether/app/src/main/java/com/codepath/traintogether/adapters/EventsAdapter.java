@@ -5,25 +5,23 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.bumptech.glide.Glide;
 import com.codepath.traintogether.R;
 import com.codepath.traintogether.TrainTogetherApplication;
 import com.codepath.traintogether.models.Group;
 import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.models.active.AssetDescription;
+import com.codepath.traintogether.models.active.Place;
 import com.codepath.traintogether.models.active.Result;
 import com.codepath.traintogether.utils.Constants;
+import com.codepath.traintogether.utils.Utils;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -34,7 +32,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvTitle;
-        public TextView tvDescription;
+        public TextView tvLocation;
+        public TextView tvTime;
         public ImageView ivPoster;
         public ImageButton ibJoin;
 
@@ -46,13 +45,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             super(view);
 
             tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-            tvDescription = (TextView) view.findViewById(R.id.tvDescription);
+            tvLocation = (TextView) view.findViewById(R.id.tvLocation);
+            tvTime = (TextView) view.findViewById(R.id.tvTime);
             ivPoster = (ImageView) view.findViewById(R.id.ivPoster);
             ibJoin = (ImageButton) view.findViewById(R.id.ibJoin);
 
             ibJoin.setOnClickListener(v -> {
                 Result event = mEvents.get(getLayoutPosition());
-                Toast.makeText(mContext, event.getAssetName(), Toast.LENGTH_SHORT).show();
 
                 mAuth = FirebaseAuth.getInstance();
                 //loggedUser = fbActivity.getUser();
@@ -104,13 +103,34 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         holder.tvTitle.setText(event.getAssetName());
         holder.ivPoster.setImageResource(0);
-        List<AssetDescription> descriptions = event.getAssetDescriptions();
-        if (descriptions.size() > 0) {
-            holder.tvDescription.setText(Html.fromHtml(descriptions.get(0).getDescription()));
+        Place place = event.getPlace();
+        if (place != null) {
+            holder.tvLocation.setText(
+                    String.format(
+                            "%s, %s · %s",
+                            place.getCityName(),
+                            place.getCountryName(),
+                            Utils.getEventDate(event.getActivityStartDate())
+                    )
+            );
         } else {
-            holder.tvDescription.setText(Html.fromHtml(""));
+            holder.tvLocation.setText("");
         }
-        Glide.with(getContext()).load(event.getLogoUrlAdr()).into(holder.ivPoster);
+        holder.tvTime.setText(Utils.getDaysToEvent(event.getActivityStartDate()));
+
+        loadThumbnail(holder, place.getCityName());
+    }
+
+    private void loadThumbnail(ViewHolder holder, String cityName) {
+        if (cityName.equalsIgnoreCase("boston")) {
+            holder.ivPoster.setImageResource(R.drawable.boston);
+        } else if (cityName.equalsIgnoreCase("san francisco")) {
+            holder.ivPoster.setImageResource(R.drawable.san_francisco);
+        } else if (cityName.equalsIgnoreCase("san diego")) {
+            holder.ivPoster.setImageResource(R.drawable.san_diego);
+        } else {
+            holder.ivPoster.setImageResource(R.drawable.default_marathon);
+        }
     }
 
     @Override

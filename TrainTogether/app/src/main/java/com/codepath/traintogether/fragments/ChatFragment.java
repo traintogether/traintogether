@@ -96,10 +96,6 @@ public class ChatFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_chat);
-//        ButterKnife.bind(this);
-
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
         unbinder = ButterKnife.bind(this, v);
 
@@ -123,6 +119,8 @@ public class ChatFragment extends BaseFragment {
             mFirebaseDatabaseReference.child(chatRoom).push().setValue(message);
             etMessage.setText("");
         });
+
+        pbLoading.setVisibility(ProgressBar.INVISIBLE);
 
         return v;
     }
@@ -280,25 +278,6 @@ public class ChatFragment extends BaseFragment {
                     applyRetrievedLengthLimit();
                 });
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        Log.d(TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
-//
-//        if (requestCode == Constants.REQUEST_INVITE) {
-//            if (resultCode == RESULT_OK) {
-//                Bundle payload = new Bundle();
-//                payload.putString(FirebaseAnalytics.Param.VALUE, "inv_sent");
-//                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
-//                Log.d(TAG, "Invitations sent: " + ids.length);
-//            } else {
-//                Bundle payload = new Bundle();
-//                payload.putString(FirebaseAnalytics.Param.VALUE, "inv_not_sent");
-//                Log.d(TAG, "Failed to send invitation.");
-//            }
-//        }
-//    }
 
     private void applyRetrievedLengthLimit() {
         Long friendly_msg_length = mFirebaseRemoteConfig.getLong(Constants.FRIENDLY_MSG_LENGTH);
