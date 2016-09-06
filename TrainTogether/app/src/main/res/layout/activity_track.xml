@@ -191,8 +191,6 @@
             android:textSize="14sp" />
 
 
-
-
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton

@@ -191,6 +191,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     selectDrawerItem(menuItem);

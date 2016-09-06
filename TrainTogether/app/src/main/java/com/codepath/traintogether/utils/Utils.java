@@ -62,7 +62,6 @@ public class Utils {
             }};
 
 
-
     public static int getPaceColor(double pace) {
         if (pace >= 1.0 && pace <= 21.0) {
             return Color.parseColor(paceColors.get(Math.floor(pace)));
@@ -80,6 +79,8 @@ public class Utils {
         try {
             dateMillis = sf.parse(rawJsonDate).getTime();
         } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         DateTime dateTime = new DateTime(dateMillis);
@@ -112,8 +113,15 @@ public class Utils {
             ).toString();
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return relativeDate;
+    }
+
+    public static int randomWithRange(int min, int max) {
+        int range = (max - min) + 1;
+        return (int) (Math.random() * range) + min;
     }
 }

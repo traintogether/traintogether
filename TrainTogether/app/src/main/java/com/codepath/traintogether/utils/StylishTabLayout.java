@@ -29,7 +29,7 @@ public class StylishTabLayout extends TabLayout {
     public void setupWithViewPager(ViewPager viewPager) {
         super.setupWithViewPager(viewPager);
 
-        Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/VesperLibre-Regular.ttf");
+        Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/roboto_light.ttf");
         this.removeAllTabs();
 
         ViewGroup slidingTabStrip = (ViewGroup) getChildAt(0);
