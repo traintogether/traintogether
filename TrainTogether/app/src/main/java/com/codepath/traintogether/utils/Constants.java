@@ -58,5 +58,4 @@ public class Constants {
     public static final int APSV_SHADOW_RADIUS = 4008;
 
 
-
 }

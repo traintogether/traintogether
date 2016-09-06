@@ -24,7 +24,7 @@ import org.parceler.Parcels;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StatsActivity extends AppCompatActivity {
+public class StatsActivity extends AppCompatActivity{
     private static final String TAG = "StatsActivity";
     private FirebaseAuth mAuth;
     private DatabaseReference mFirebaseDatabaseReference;
@@ -98,6 +98,7 @@ public class StatsActivity extends AppCompatActivity {
 
         }
     }
+
 
 }
 
