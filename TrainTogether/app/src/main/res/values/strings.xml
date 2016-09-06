@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Train Together</string>
+    <string name="app_name">Runathon</string>
     <string name="welcome_msg">Welcome!</string>
     <string name="sign_out">Sign Out</string>
     <string name="contacts_permission_rationale">Access to account information is required to sign in.</string>
@@ -67,5 +67,6 @@
         <item name="3">3</item>
     </string-array>
     <string name="title_activity_schedule">ScheduleActivity</string>
+    <string name="secret_maps_api_key">AIzaSyAyK2iYheF8A8XvvF0XG3G6oWqnDBBI57w</string>
 
 </resources>

@@ -41,7 +41,11 @@ android {
 ext {
     supportLibVersion = '24.1.1'
 }
-
+repositories{
+    flatDir{
+        dirs 'libs'
+    }
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
@@ -80,8 +84,12 @@ dependencies {
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
 
-    //google fit
+    //google services
     compile 'com.google.android.gms:play-services-fitness:9.4.0'
+    compile 'com.google.android.gms:play-services-maps:9.4.0'
+    compile 'com.google.android.gms:play-services-location:9.4.0'
+    compile 'com.google.android.gms:play-services-places:9.4.0'
+    compile 'com.google.maps.android:android-maps-utils:0.4'
 
     compile 'org.parceler:parceler-api:1.1.1'
     apt 'org.parceler:parceler:1.1.1'
@@ -91,7 +99,18 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
 
+    //charting libraries
+    compile(name:'library_arcstackview', ext:'aar')
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
+
+    //viewpager
+    compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
+    compile 'io.github.yavski:fab-speed-dial:1.0.4'
+    compile 'com.github.antwankakki:FabricView:-SNAPSHOT'
     compile 'net.danlew:android.joda:2.9.4.1'
+
+    //spotify
+    compile project(':spotifysdk-1.0.0-beta4')
 }
 
 apply plugin: 'com.google.gms.google-services'

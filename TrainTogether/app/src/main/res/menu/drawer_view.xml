@@ -4,28 +4,28 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/common_ic_googleplayservices"
+            android:icon="@drawable/home"
             android:title="Home" />
         <item
             android:id="@+id/nav_chat"
-            android:icon="@drawable/common_ic_googleplayservices"
+            android:icon="@drawable/ic_chat_24dp"
             android:title="Chat" />
         <item
             android:id="@+id/nav_stats"
-            android:icon="@drawable/common_ic_googleplayservices"
+            android:icon="@drawable/ic_show_chart_24px"
             android:title="Stats" />
         <item
             android:id="@+id/nav_requests"
-            android:icon="@drawable/common_ic_googleplayservices"
+            android:icon="@drawable/mention"
             android:title="Requests" />
         <item
             android:id="@+id/nav_leaderboard"
-            android:icon="@drawable/common_ic_googleplayservices"
+            android:icon="@drawable/leaderboard"
             android:title="Leaderboard" />
 
         <item
             android:id="@+id/nav_schedule"
-            android:icon="@drawable/common_ic_googleplayservices"
+            android:icon="@drawable/ic_nav_calendar_24dp"
             android:title="Training Schedule" />
     </group>
 
@@ -33,11 +33,11 @@
         <menu>
             <item
                 android:id="@+id/nav_login"
-                android:icon="@drawable/common_ic_googleplayservices"
+                android:icon="@drawable/ic_lock_open_24px"
                 android:title="Login" />
             <item
                 android:id="@+id/nav_preference"
-                android:icon="@drawable/common_ic_googleplayservices"
+                android:icon="@drawable/pref"
                 android:title="Preferences" />
         </menu>
     </item>

@@ -1,24 +1,5 @@
 package com.codepath.traintogether.activities;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.TrainTogetherApplication;
-import com.codepath.traintogether.fragments.ChatFragment;
-import com.codepath.traintogether.fragments.FeedFragment;
-import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
-import com.codepath.traintogether.models.FilterSettings;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.utils.Constants;
-import com.codepath.traintogether.utils.StylishTabLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,6 +22,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.fragments.ChatFragment;
+import com.codepath.traintogether.fragments.FeedFragment;
+import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
+import com.codepath.traintogether.models.FilterSettings;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+import com.codepath.traintogether.utils.StylishTabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,6 +186,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     selectDrawerItem(menuItem);
@@ -295,8 +295,12 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User u = snapshot.getValue(User.class);
-                    TrainTogetherApplication.setCurrentUser(u);
+                    try {
+                        User u = snapshot.getValue(User.class);
+                        TrainTogetherApplication.setCurrentUser(u);
+                    }catch (Exception e){
+                        Log.d("DEBUG", e.getMessage());
+                    }
                 }
 
             }

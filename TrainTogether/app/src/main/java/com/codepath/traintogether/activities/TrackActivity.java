@@ -1,21 +1,38 @@
 package com.codepath.traintogether.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.helpers.AddLocationLayer;
+import com.codepath.traintogether.helpers.AddMarkerOnLongClick;
+import com.codepath.traintogether.helpers.AddToMap;
+import com.codepath.traintogether.helpers.MoveToLocationFirstTime;
+import com.codepath.traintogether.helpers.OnActivity;
+import com.codepath.traintogether.helpers.OnClient;
+import com.codepath.traintogether.helpers.OnMap;
+import com.codepath.traintogether.helpers.OnPermission;
+import com.codepath.traintogether.helpers.PlaceManager;
+import com.codepath.traintogether.helpers.TrackLocation;
 import com.codepath.traintogether.models.Run;
 import com.codepath.traintogether.utils.Constants;
+import com.codepath.traintogether.utils.Utils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,10 +49,26 @@ import com.google.android.gms.fitness.request.DataSourcesRequest;
 import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.result.DataSourcesResult;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.maps.android.ui.IconGenerator;
+import com.spotify.sdk.android.Spotify;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
+import com.spotify.sdk.android.authentication.SpotifyAuthentication;
+import com.spotify.sdk.android.playback.ConnectionStateCallback;
+import com.spotify.sdk.android.playback.Player;
+import com.spotify.sdk.android.playback.PlayerNotificationCallback;
+import com.spotify.sdk.android.playback.PlayerState;
 
 import org.parceler.Parcels;
 
@@ -44,44 +77,71 @@ import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class TrackActivity extends AppCompatActivity implements OnDataPointListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener, TrackLocation.Listener,
+        PlayerNotificationCallback, ConnectionStateCallback {
+
+    private static final String CLIENT_ID = "aa1f1a842a644cfabd97a777234ad61a";
+    private static final String REDIRECT_URI = "traintogether://callback";
+    private Player mPlayer;
+    boolean isPlaying = false;
 
     private static final int REQUEST_OAUTH = 1;
     private static final String AUTH_PENDING = "auth_state_pending";
-    private static final String TAG = "TrackActivity";
+    public static final String TAG = "TrackActivity";
     private boolean authInProgress = false;
     private GoogleApiClient mApiClient;
     OnDataPointListener mSpeedListener;
     OnDataPointListener mLocationListener;
     OnDataPointListener mDistanceListener;
     private static Location lastLocation = new Location("");
+    private static LatLng lastMapLocation;
 
     private static float distance = 0;
     private static Double calorie;
     private Run finalRun;
 
+    long starttime = 0L;
+    long timeInMilliseconds = 0L;
+    long timeSwapBuff = 0L;
+    long updatedtime = 0L;
+    int t = 1;
+    int secs = 0;
+    int mins = 0;
+    int milliseconds = 0;
+    Handler handler = new Handler();
+
+
+
     private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     private DatabaseReference mFirebaseDatabaseReference;
+    private static double instantaneousSpeed = 0;
 
-    @BindView(R.id.tvStats)
-    TextView tvStats;
-    @BindView(R.id.tvSpeed)
-    TextView tvSpeed;
-    @BindView(R.id.tvDistance)
+
+    @BindView(R.id.tvDist)
     TextView tvDistance;
-    @BindView(R.id.tvCalorie)
+    @BindView(R.id.tvCalories)
     TextView tvCalorie;
+    @BindView(R.id.tvPace)
+    TextView tvPace;
+    @BindView(R.id.tvTime)
+    Chronometer tvTime;
+;
+    @BindView(R.id.fabPause)
+    FloatingActionButton fabPause;
+    @BindView(R.id.fabStop)
+    FloatingActionButton fabStop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track);
         ButterKnife.bind(this);
-
+        tvTime.start();
         if (savedInstanceState != null) {
             authInProgress = savedInstanceState.getBoolean(AUTH_PENDING);
         }
@@ -92,6 +152,113 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        setupMapview(savedInstanceState);
+
+        setupFab();
+    }
+
+    private void setupMapview(Bundle savedInstanceState) {
+
+        AddToMap adder = new AddToMap(getIconGenerator());
+        PlaceManager manager = new PlaceManager(adder);
+        AddMarkerOnLongClick click = new AddMarkerOnLongClick(this, manager);
+
+        AddLocationLayer layer = new AddLocationLayer();
+        MoveToLocationFirstTime move = new MoveToLocationFirstTime(savedInstanceState);
+        TrackLocation track = new TrackLocation(getLocationRequest(), this);
+
+        new OnActivity.Builder(this, manager, track).build();
+
+        FragmentManager fm = getSupportFragmentManager();
+        SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
+        if (fragment != null) {
+            getMapAsync(fragment, new OnMap(manager, click, layer, move, track));
+        }
+
+        GoogleApiClient client = getGoogleApiClient();
+        addConnectionCallbacks(client, new OnClient(client, move, track));
+
+        int requestCode = 1001;
+        String permission = Manifest.permission.ACCESS_FINE_LOCATION;
+        OnPermission.Request location = new OnPermission.Request(requestCode, permission, layer, move, track);
+        OnPermission onPermission = new OnPermission.Builder(this).build();
+        onPermission.beginRequest(location);
+    }
+
+    public void setupFab() {
+        fabPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SpotifyAuthentication.openAuthWindow(CLIENT_ID, "token", REDIRECT_URI,
+                        new String[]{"user-read-private", "streaming"}, null, TrackActivity.this);
+                /*if(isPlaying)
+                    mPlayer.pause();
+                else
+                    mPlayer.play("spotify:track:2TpxZ7JUBn3uw46aR7qd6V");
+
+                isPlaying = !isPlaying;*/
+            }
+        });
+
+        fabStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvTime.stop();
+                unregisterFitnessDataListener(mSpeedListener);
+                unregisterFitnessDataListener(mLocationListener);
+                unregisterFitnessDataListener(mDistanceListener);
+                saveToDB();
+            }
+        });
+    }
+
+    // TODO Build IconGenerator
+    // Set IconGenerator attributes.
+    // Use the MarkerFont text appearance style.
+    // Use it to build custom markers.
+    private IconGenerator getIconGenerator() {
+        IconGenerator generator = new IconGenerator(this);
+        generator.setStyle(IconGenerator.STYLE_GREEN);
+        generator.setTextAppearance(R.style.MarkerFont);
+        return generator;
+    }
+
+    // TODO Build LocationRequest
+    // Set priority, interval, and fastest interval.
+    // Use it to start location updates.
+    private LocationRequest getLocationRequest() {
+        LocationRequest request = new LocationRequest();
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setInterval(1000);        // 10 seconds
+        request.setFastestInterval(500);  // 5 seconds
+        return request;
+    }
+
+    // TODO Build GoogleApiClient
+    // Enable auto manage and add LocationServices API
+    private GoogleApiClient getGoogleApiClient() {
+        return new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, null)
+                .addApi(LocationServices.API).build();
+    }
+
+    // TODO Get the map asynchronously
+    private void getMapAsync(SupportMapFragment fragment, OnMapReadyCallback callback) {
+        fragment.getMapAsync(callback);
+    }
+
+    // TODO Add callbacks to the GoogleApiClient
+    private void addConnectionCallbacks(GoogleApiClient client, GoogleApiClient.ConnectionCallbacks callbacks) {
+        client.registerConnectionCallbacks(callbacks);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //reset all fields
+        distance = 0;
     }
 
     @Override
@@ -233,7 +400,7 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
 
     private void registerFitnessDataListener(DataSource dataSource, DataType dataType, int REQUEST_STAT_TYPE) {
         DecimalFormat df2FractionDigits = new DecimalFormat();
-        df2FractionDigits.setMaximumFractionDigits(2);
+
 
         switch (REQUEST_STAT_TYPE){
             case Constants.REQUEST_TYPE_SPEED:
@@ -243,13 +410,15 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                         for (Field field : dataPoint.getDataType().getFields()) {
                             Float val = dataPoint.getValue(field).asFloat();
                             float metersPerSecondToMilesPerHour = (float) 2.23694;
+                            instantaneousSpeed = (double) (val * metersPerSecondToMilesPerHour);
+
                             Log.i(TAG, "Detected DataPoint field: " + field.getName());
                             Log.i(TAG, "Detected DataPoint value: " + String.valueOf(val * metersPerSecondToMilesPerHour));
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Calendar c = Calendar.getInstance();
-                                    tvSpeed.setText("Pace: " + String.valueOf(df2FractionDigits.format(val * metersPerSecondToMilesPerHour)) + " mph");
+                                    df2FractionDigits.setMaximumFractionDigits(1);
+                                    tvPace.setText(String.valueOf(df2FractionDigits.format(val * metersPerSecondToMilesPerHour)));
                                 }
                             });
                         }
@@ -298,15 +467,14 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Calendar c = Calendar.getInstance();
-                                tvStats.setText(tvStats.getText() + "\n" + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND) + " Field: " + field.getName() + " Value: " + val);
+                                //tvStats.setText(tvStats.getText() + "\n" + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND) + " Field: " + field.getName() + " Value: " + val);
 
 
                             }
                         });
                     }
 
-                    if(lastLocation.getLongitude() != 0 && lastLocation.getLatitude() != 0/* only one condition is enough to check empty location*/){
+                    if(lastLocation.getLongitude() != 0 && lastLocation.getLatitude() != 0){
                         distance = distance + (currentLocation.distanceTo(lastLocation) * (float) 0.000621371); //convert meters to miles 1 meter = 0.000621371 miles
                         //TODO: get weight from profile preferences
                         /*
@@ -315,18 +483,23 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                          * */
                         calorie = distance * 0.75 * 160 ; //160 here is arbitrary weight value in lbs
                         Log.i(TAG, "Distance: " + distance + " "  + currentLocation.getLatitude() + " "+ currentLocation.getLongitude() + " "+ lastLocation.getLatitude() + " "+ lastLocation.getLongitude() + " " + currentLocation.distanceTo(lastLocation));
+
                     }
+
+
                     lastLocation.setLatitude(currentLocation.getLatitude());
                     lastLocation.setLongitude(currentLocation.getLongitude());
+
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if(distance > 0.01){
-                                tvDistance.setText("Distance: " + String.valueOf(df2FractionDigits.format(distance)) + " miles");
-                                tvCalorie.setText("Calorie: " + String.valueOf(calorie.intValue()));
+                                df2FractionDigits.setMaximumFractionDigits(2);
+                                tvDistance.setText(String.valueOf(df2FractionDigits.format(distance)));
+                                tvCalorie.setText(String.valueOf(calorie.intValue()));
                             }else{
-                                tvDistance.setText("Distance: --:--");
+//                                tvDistance.setText("Distance: --:--");
                             }
                         }
                     });
@@ -362,7 +535,7 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                                 @Override
                                 public void run() {
                                     Calendar c = Calendar.getInstance();
-                                    tvDistance.setText("Distance: " + val);
+                                    //tvDistance.setText("Distance: " + val);
                                     Log.i(TAG, "Detected DataPoint field: " + field.getName());
                                     Log.i(TAG, "Detected DataPoint value: " + val);
                                 }
@@ -370,15 +543,8 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                         }
                     }
                 };
-
                 break;
-
         }
-
-
-
-
-
     }
 
     @Override
@@ -410,7 +576,7 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                     Log.i(TAG, "Field: " + field.getName() + " Value: " + value);
                     Toast.makeText(getApplicationContext(), "Field: " + field.getName() + " Value: " + value, Toast.LENGTH_SHORT).show();
                     Calendar c = Calendar.getInstance();
-                    tvStats.setText(tvStats.getText() + "\n" + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND) + " Field: " + field.getName() + " Value: " + value);
+//                    tvStats.setText(tvStats.getText() + "\n" + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND) + " Field: " + field.getName() + " Value: " + value);
                 }
             });
         }
@@ -438,13 +604,7 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
         outState.putBoolean(AUTH_PENDING, authInProgress);
     }
 
-    public void stopActivityTracking(View view) {
-        unregisterFitnessDataListener(mSpeedListener);
-        unregisterFitnessDataListener(mLocationListener);
-        unregisterFitnessDataListener(mDistanceListener);
-        saveToDB();
 
-    }
 
     /**
      * Unregister the listener with the Sensors API.
@@ -460,19 +620,23 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
         // Waiting isn't actually necessary as the unregister call will complete regardless,
         // even if called from within onStop, but a callback can still be added in order to
         // inspect the results.
-        Fitness.SensorsApi.remove(
-                mApiClient,
-                mListener)
-                .setResultCallback(new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        if (status.isSuccess()) {
-                            Log.i(TAG, "Listener was removed!");
-                        } else {
-                            Log.i(TAG, "Listener was not removed.");
+        try {
+            Fitness.SensorsApi.remove(
+                    mApiClient,
+                    mListener)
+                    .setResultCallback(new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            if (status.isSuccess()) {
+                                Log.i(TAG, "Listener was removed!");
+                            } else {
+                                Log.i(TAG, "Listener was not removed.");
+                            }
                         }
-                    }
-                });
+                    });
+        }catch (Exception e){
+            Log.d(TAG, Log.getStackTraceString(e));
+        }
         // [END unregister_data_listener]
 
     }
@@ -487,18 +651,103 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
             String key = mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(currentUser.getUid()).child(Constants.USER_RUNS_CHILD).push().getKey();
             finalRun = new Run(key, distance, calorie);
             mFirebaseDatabaseReference.child(Constants.USERS_CHILD).child(currentUser.getUid()).child(Constants.USER_RUNS_CHILD).child(key).setValue(finalRun);
-            Log.e("run_key1", finalRun.getKey());
             intent.putExtra("run", Parcels.wrap(finalRun));
             setResult(RESULT_OK, intent);
         }else{
             setResult(Constants.RESULT_NO_USER, null);
         }
-        Run run = (Run) Parcels.unwrap(intent.getParcelableExtra("run"));
-        Log.e("run_key2", run.getKey());
-
-
         finish();
 
     }
 
+    @Override
+    public void accept(GoogleMap map, LatLng currentMapLocation) {
+
+        if(lastMapLocation != null && instantaneousSpeed > 0) {
+
+            Polyline line = map.addPolyline(new PolylineOptions()
+                    .add(lastMapLocation, currentMapLocation)
+                    .width(15)
+                    .color(Utils.getPaceColor(instantaneousSpeed)));
+        }
+        lastMapLocation = currentMapLocation;
+    }
+
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Uri uri = intent.getData();
+        if (uri != null) {
+            AuthenticationResponse response = SpotifyAuthentication.parseOauthResponse(uri);
+            Spotify spotify = new Spotify(response.getAccessToken());
+            mPlayer = spotify.getPlayer(this, "My Company Name", this, new Player.InitializationObserver() {
+                @Override
+                public void onInitialized() {
+                    mPlayer.addConnectionStateCallback(TrackActivity.this);
+                    mPlayer.addPlayerNotificationCallback(TrackActivity.this);
+                    //mPlayer.play("spotify:track:2TpxZ7JUBn3uw46aR7qd6V");
+                    Log.d(TAG, "Initializing Spotify");
+                    if(isPlaying)
+                        mPlayer.pause();
+                    else
+                        mPlayer.play("spotify:track:2TpxZ7JUBn3uw46aR7qd6V");
+
+                    isPlaying = !isPlaying;
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    Log.e(TAG, "Could not initialize player: " + throwable.getMessage());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onLoggedIn() {
+        Log.d(TAG, "User logged in");
+    }
+
+    @Override
+    public void onLoggedOut() {
+        Log.d(TAG, "User logged out");
+    }
+
+    @Override
+    public void onLoginFailed(Throwable error) {
+        Log.d(TAG, "Login failed");
+    }
+
+    @Override
+    public void onTemporaryError() {
+        Log.d(TAG, "Temporary error occurred");
+    }
+
+    @Override
+    public void onNewCredentials(String s) {
+        Log.d(TAG, "User credentials blob received");
+    }
+
+    @Override
+    public void onConnectionMessage(String message) {
+        Log.d(TAG, "Received connection message: " + message);
+    }
+
+    @Override
+    public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
+        Log.d(TAG, "Playback event received: " + eventType.name());
+    }
+
+    @Override
+    protected void onDestroy() {
+        // VERY IMPORTANT! This must always be called or else you will leak resources
+        Spotify.destroyPlayer(this);
+        super.onDestroy();
+    }
 }
