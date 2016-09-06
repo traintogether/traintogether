@@ -108,6 +108,9 @@ dependencies {
     compile 'io.github.yavski:fab-speed-dial:1.0.4'
     compile 'com.github.antwankakki:FabricView:-SNAPSHOT'
     compile 'net.danlew:android.joda:2.9.4.1'
+
+    //spotify
+    compile project(':spotifysdk-1.0.0-beta4')
 }
 
 apply plugin: 'com.google.gms.google-services'

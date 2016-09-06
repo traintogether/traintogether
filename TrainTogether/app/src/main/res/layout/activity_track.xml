@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -203,7 +202,8 @@
         android:layout_gravity="bottom|center"
         android:layout_margin="@dimen/dual_fab_margin"
         android:padding="10dp"
-        android:src="@drawable/ic_pause_24dp" />
+        android:src="@drawable/ic_pause_24dp"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabStop"

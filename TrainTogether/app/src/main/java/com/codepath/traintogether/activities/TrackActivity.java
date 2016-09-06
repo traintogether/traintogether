@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -61,6 +62,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.maps.android.ui.IconGenerator;
+import com.spotify.sdk.android.Spotify;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
+import com.spotify.sdk.android.authentication.SpotifyAuthentication;
+import com.spotify.sdk.android.playback.ConnectionStateCallback;
+import com.spotify.sdk.android.playback.Player;
+import com.spotify.sdk.android.playback.PlayerNotificationCallback;
+import com.spotify.sdk.android.playback.PlayerState;
 
 import org.parceler.Parcels;
 
@@ -73,7 +81,13 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class TrackActivity extends AppCompatActivity implements OnDataPointListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, TrackLocation.Listener {
+        GoogleApiClient.OnConnectionFailedListener, TrackLocation.Listener,
+        PlayerNotificationCallback, ConnectionStateCallback {
+
+    private static final String CLIENT_ID = "aa1f1a842a644cfabd97a777234ad61a";
+    private static final String REDIRECT_URI = "traintogether://callback";
+    private Player mPlayer;
+    boolean isPlaying = false;
 
     private static final int REQUEST_OAUTH = 1;
     private static final String AUTH_PENDING = "auth_state_pending";
@@ -142,7 +156,6 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
         setupMapview(savedInstanceState);
 
         setupFab();
-
     }
 
     private void setupMapview(Bundle savedInstanceState) {
@@ -173,11 +186,18 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
         onPermission.beginRequest(location);
     }
 
-    private void setupFab() {
+    public void setupFab() {
         fabPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SpotifyAuthentication.openAuthWindow(CLIENT_ID, "token", REDIRECT_URI,
+                        new String[]{"user-read-private", "streaming"}, null, TrackActivity.this);
+                /*if(isPlaying)
+                    mPlayer.pause();
+                else
+                    mPlayer.play("spotify:track:2TpxZ7JUBn3uw46aR7qd6V");
 
+                isPlaying = !isPlaying;*/
             }
         });
 
@@ -189,7 +209,6 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                 unregisterFitnessDataListener(mLocationListener);
                 unregisterFitnessDataListener(mDistanceListener);
                 saveToDB();
-
             }
         });
     }
@@ -241,9 +260,6 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
         //reset all fields
         distance = 0;
     }
-
-
-
 
     @Override
     protected void onStart() {
@@ -527,15 +543,8 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                         }
                     }
                 };
-
                 break;
-
         }
-
-
-
-
-
     }
 
     @Override
@@ -669,4 +678,76 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
         super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Uri uri = intent.getData();
+        if (uri != null) {
+            AuthenticationResponse response = SpotifyAuthentication.parseOauthResponse(uri);
+            Spotify spotify = new Spotify(response.getAccessToken());
+            mPlayer = spotify.getPlayer(this, "My Company Name", this, new Player.InitializationObserver() {
+                @Override
+                public void onInitialized() {
+                    mPlayer.addConnectionStateCallback(TrackActivity.this);
+                    mPlayer.addPlayerNotificationCallback(TrackActivity.this);
+                    //mPlayer.play("spotify:track:2TpxZ7JUBn3uw46aR7qd6V");
+                    Log.d(TAG, "Initializing Spotify");
+                    if(isPlaying)
+                        mPlayer.pause();
+                    else
+                        mPlayer.play("spotify:track:2TpxZ7JUBn3uw46aR7qd6V");
+
+                    isPlaying = !isPlaying;
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    Log.e(TAG, "Could not initialize player: " + throwable.getMessage());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onLoggedIn() {
+        Log.d(TAG, "User logged in");
+    }
+
+    @Override
+    public void onLoggedOut() {
+        Log.d(TAG, "User logged out");
+    }
+
+    @Override
+    public void onLoginFailed(Throwable error) {
+        Log.d(TAG, "Login failed");
+    }
+
+    @Override
+    public void onTemporaryError() {
+        Log.d(TAG, "Temporary error occurred");
+    }
+
+    @Override
+    public void onNewCredentials(String s) {
+        Log.d(TAG, "User credentials blob received");
+    }
+
+    @Override
+    public void onConnectionMessage(String message) {
+        Log.d(TAG, "Received connection message: " + message);
+    }
+
+    @Override
+    public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
+        Log.d(TAG, "Playback event received: " + eventType.name());
+    }
+
+    @Override
+    protected void onDestroy() {
+        // VERY IMPORTANT! This must always be called or else you will leak resources
+        Spotify.destroyPlayer(this);
+        super.onDestroy();
+    }
 }

@@ -91,7 +91,17 @@
                 android:value="com.codepath.traintogether.activities.MainActivity" />
         </activity>
         <activity android:name=".activities.StatsActivity" />
-        <activity android:name=".activities.TrackActivity" />
+        <activity android:name=".activities.TrackActivity"
+                android:launchMode="singleInstance">
+            <intent-filter>
+            <action android:name="android.intent.action.VIEW"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="callback"
+                    android:scheme="traintogether"/>
+            </intent-filter>
+            </activity>
         <activity
             android:name=".activities.EventDetailActivity"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity">
