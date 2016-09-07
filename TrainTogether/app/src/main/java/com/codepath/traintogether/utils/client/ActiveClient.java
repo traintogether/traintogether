@@ -1,13 +1,13 @@
 package com.codepath.traintogether.utils.client;
 
-import android.content.Context;
-import android.text.TextUtils;
-
-import com.codepath.traintogether.utils.Constants;
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.utils.Constants;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+import android.content.Context;
+import android.text.TextUtils;
 
 /**
  * Created by ameyapandilwar on 8/17/16 at 7:04 PM.

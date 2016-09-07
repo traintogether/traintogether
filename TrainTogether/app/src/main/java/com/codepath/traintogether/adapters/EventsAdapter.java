@@ -1,6 +1,24 @@
 package com.codepath.traintogether.adapters;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import com.bumptech.glide.Glide;
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.activities.LoginActivity;
+import com.codepath.traintogether.models.Group;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.models.active.Place;
+import com.codepath.traintogether.models.active.Result;
+import com.codepath.traintogether.utils.Constants;
+import com.codepath.traintogether.utils.Utils;
+
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,20 +26,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.TrainTogetherApplication;
-import com.codepath.traintogether.models.Group;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.models.active.Place;
-import com.codepath.traintogether.models.active.Result;
-import com.codepath.traintogether.utils.Constants;
-import com.codepath.traintogether.utils.Utils;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -58,7 +62,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 Result event = mEvents.get(getLayoutPosition());
 
                 mAuth = FirebaseAuth.getInstance();
-                //loggedUser = fbActivity.getUser();
                 loggedUser = mAuth.getCurrentUser();
                 if (loggedUser != null) {
                     Group group = new Group();
@@ -77,9 +80,32 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
                     group.users.add(user);
                     mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).child(key).setValue(group);
+                } else {
+                    displayLoginDialog(getContext());
                 }
             });
         }
+    }
+
+    private void displayLoginDialog(Context context) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        alertDialogBuilder.setTitle("Login");
+
+        alertDialogBuilder
+                .setMessage("You need to login!")
+                .setCancelable(false)
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    getContext().startActivity(intent);
+                })
+                .setNegativeButton("No", (dialog, id) -> {
+                    dialog.cancel();
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        alertDialog.show();
     }
 
     private List<Result> mEvents;

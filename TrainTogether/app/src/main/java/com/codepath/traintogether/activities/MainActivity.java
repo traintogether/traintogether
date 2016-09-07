@@ -1,5 +1,24 @@
 package com.codepath.traintogether.activities;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.fragments.ChatFragment;
+import com.codepath.traintogether.fragments.FeedFragment;
+import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
+import com.codepath.traintogether.models.FilterSettings;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+import com.codepath.traintogether.utils.StylishTabLayout;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,24 +43,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.TrainTogetherApplication;
-import com.codepath.traintogether.fragments.ChatFragment;
-import com.codepath.traintogether.fragments.FeedFragment;
-import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
-import com.codepath.traintogether.models.FilterSettings;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.utils.Constants;
-import com.codepath.traintogether.utils.StylishTabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,8 +61,10 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
     private FirebaseUser user;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mFirebaseDatabaseReference;
+
+    ViewPager viewPager;
+    Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,23 +81,18 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = firebaseAuth -> {
-            user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                checkCurrentUser(user.getUid());
-                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-            } else {
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-            }
-        };
+        user = mAuth.getCurrentUser();
+        if (user != null) {
+            checkCurrentUser(user.getUid());
+        }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        adapter = new Adapter(getSupportFragmentManager());
         StylishTabLayout tabLayout = (StylishTabLayout) findViewById(R.id.tabs);
 
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.flFeed);
@@ -183,7 +181,6 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new FeedFragment(), "Feed");
         adapter.addFragment(new FeedFragment(), "Stats");
         adapter.addFragment(new ChatFragment(), "Chat");
@@ -211,7 +208,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
                 startActivity(new Intent(MainActivity.this, LeaderBoardActivity.class));
                 break;
             case R.id.nav_stats:
-                startActivity(new Intent(MainActivity.this, StatsActivity.class));
+                viewPager.setAdapter(adapter);
                 break;
 
             case R.id.nav_preference:
@@ -315,20 +312,6 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
             }
         });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
 }
