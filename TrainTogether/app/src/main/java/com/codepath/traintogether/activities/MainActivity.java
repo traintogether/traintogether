@@ -1,24 +1,5 @@
 package com.codepath.traintogether.activities;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.TrainTogetherApplication;
-import com.codepath.traintogether.fragments.ChatFragment;
-import com.codepath.traintogether.fragments.FeedFragment;
-import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
-import com.codepath.traintogether.models.FilterSettings;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.utils.Constants;
-import com.codepath.traintogether.utils.StylishTabLayout;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -42,6 +23,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.fragments.ChatFragment;
+import com.codepath.traintogether.fragments.FeedFragment;
+import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
+import com.codepath.traintogether.models.FilterSettings;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+import com.codepath.traintogether.utils.StylishTabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
     ViewPager viewPager;
     Adapter adapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,12 +87,10 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
         user = mAuth.getCurrentUser();
         if (user != null) {
             checkCurrentUser(user.getUid());
+
         }
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        if (navigationView != null) {
-            setupDrawerContent(navigationView);
-        }
+
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new Adapter(getSupportFragmentManager());
@@ -98,6 +99,12 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.flFeed);
 
         User currentUser = TrainTogetherApplication.getCurrentUser();
+
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if (navigationView != null) {
+            setupDrawerContent(navigationView, currentUser);
+        }
 
         if (currentUser != null && currentUser.getGroups().size() > 0) {
             if (viewPager != null) {
@@ -124,6 +131,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
         preferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -187,17 +195,29 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
         viewPager.setAdapter(adapter);
     }
 
-    private void setupDrawerContent(NavigationView navigationView) {
+    private void setupDrawerContent(NavigationView navigationView, User currentUser) {
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     selectDrawerItem(menuItem);
                     return true;
                 });
+
+        // Inflate the header view at runtime
+        if(currentUser != null) {
+            View headerLayout =  navigationView.getHeaderView(0);
+            // We can now look up items within the header if needed
+            ImageView ivProfilePhoto = (ImageView) headerLayout.findViewById(R.id.ivProfilePhoto);
+            ivProfilePhoto.setImageResource(0);
+            Glide.with(getApplicationContext()).load(currentUser.getPhotoUrl()).into(ivProfilePhoto);
+            Log.i(TAG, "user.getPhotoUrl(): " + currentUser.getPhotoUrl() + " name:" + currentUser.getDisplayName());
+            TextView tvUserName = (TextView) headerLayout.findViewById(R.id.tvUserName);
+            tvUserName.setText(currentUser.getDisplayName());
+        }
     }
 
     private void selectDrawerItem(MenuItem menuItem) {
-        switch(menuItem.getItemId()) {
+        switch (menuItem.getItemId()) {
 //            case R.id.nav_chat:
 //                startActivity(new Intent(MainActivity.this, ChatActivity.class));
 //                break;
@@ -300,7 +320,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
                     try {
                         User u = snapshot.getValue(User.class);
                         TrainTogetherApplication.setCurrentUser(u);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         Log.d("DEBUG", e.getMessage());
                     }
                 }

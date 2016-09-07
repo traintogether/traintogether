@@ -33,12 +33,11 @@ public class User {
 
     }
 
-    String name;
+    public String name;
     String location;
     int rank;
     int miles;
     int runs;
-    private String profileImageUrl;
     public List<String> groups = new ArrayList<>();
 
     public List<String> getGroups() {
@@ -59,7 +58,7 @@ public class User {
         this.rank = rank;
         this.miles = miles;
         this.runs = runs;
-        this.profileImageUrl = profileImageUrl;
+        this.photoUrl = profileImageUrl;
     }
 
     public String getName() {
@@ -103,9 +102,11 @@ public class User {
     }
 
     public String getProfileImageUrl() {
-
         //return profileImageUrl;
-        return "http://www.paradigmresource.com/wp-content/uploads/2014/12/download.jpg";
+        if(photoUrl == null) {
+            return "http://www.paradigmresource.com/wp-content/uploads/2014/12/download.jpg";
+        }
+        return photoUrl;
     }
 
     @Override
@@ -116,7 +117,7 @@ public class User {
                 ", rank=" + rank +
                 ", miles=" + miles +
                 ", runs=" + runs +
-                ", profileImageUrl='" + profileImageUrl + '\'' +
+                ", profileImageUrl='" + photoUrl + '\'' +
                 '}';
     }
 }
