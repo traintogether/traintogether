@@ -32,6 +32,7 @@ import com.codepath.traintogether.TrainTogetherApplication;
 import com.codepath.traintogether.fragments.ChatFragment;
 import com.codepath.traintogether.fragments.FeedFragment;
 import com.codepath.traintogether.fragments.FilterSettingsDialogFragment;
+import com.codepath.traintogether.fragments.StatsFragment;
 import com.codepath.traintogether.models.FilterSettings;
 import com.codepath.traintogether.models.User;
 import com.codepath.traintogether.utils.Constants;
@@ -64,6 +65,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
     private FirebaseUser user;
     private FirebaseAuth mAuth;
     private DatabaseReference mFirebaseDatabaseReference;
+    FloatingActionButton fab;
 
     ViewPager viewPager;
     Adapter adapter;
@@ -90,7 +92,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
         }
 
-
+        fab =  (FloatingActionButton) findViewById(R.id.fab);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new Adapter(getSupportFragmentManager());
@@ -112,6 +114,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
             }
             tabLayout.setVisibility(View.VISIBLE);
             frameLayout.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
         } else {
             tabLayout.setVisibility(View.GONE);
             frameLayout.setVisibility(View.VISIBLE);
@@ -125,7 +128,6 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
         }
         tabLayout.setupWithViewPager(viewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> showFilterSettingsDialog());
 
         preferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
@@ -190,7 +192,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
 
     private void setupViewPager(ViewPager viewPager) {
         adapter.addFragment(new FeedFragment(), "Feed");
-        adapter.addFragment(new FeedFragment(), "Stats");
+        adapter.addFragment(new StatsFragment(), "Stats");
         adapter.addFragment(new ChatFragment(), "Chat");
         viewPager.setAdapter(adapter);
     }

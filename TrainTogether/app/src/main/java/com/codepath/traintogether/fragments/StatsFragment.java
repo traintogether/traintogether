@@ -1,15 +1,18 @@
-package com.codepath.traintogether.activities;
+package com.codepath.traintogether.fragments;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.codepath.traintogether.R;
+import com.codepath.traintogether.activities.TrackActivity;
 import com.codepath.traintogether.adapters.CustomStatsPagerAdapter;
 import com.codepath.traintogether.models.GroupStat;
 import com.codepath.traintogether.models.Run;
@@ -23,8 +26,9 @@ import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
-public class StatsActivity extends AppCompatActivity{
+public class StatsFragment  extends BaseFragment {
     private static final String TAG = "StatsActivity";
     private FirebaseAuth mAuth;
     private DatabaseReference mFirebaseDatabaseReference;
@@ -41,26 +45,37 @@ public class StatsActivity extends AppCompatActivity{
     FloatingActionButton fabStartRun;
     GroupStat groupStat;
 
+    private Unbinder unbinder;
+
     Context mContext;
 
     CustomStatsPagerAdapter vpGroupStatsPagerAdapter, vpUserStatsPagerAdapter;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
-        ButterKnife.bind(this);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View v = inflater.inflate(R.layout.fragment_stats, container, false);
+
+        unbinder = ButterKnife.bind(this, v);
+
+        setupViews(getContext());
+
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-        mContext = this;
 
+        return v;
+
+    }
+
+    private void setupViews(Context context) {
         //setup group charts view pager
-        vpGroupStatsPagerAdapter = new CustomStatsPagerAdapter(this, Constants.VIEW_PAGER_GROUP_STAT);
+        vpGroupStatsPagerAdapter = new CustomStatsPagerAdapter(getContext(), Constants.VIEW_PAGER_GROUP_STAT);
         vpGroupStatsPager.setAdapter(vpGroupStatsPagerAdapter);
         inkPageIndicatorGroup.setViewPager(vpGroupStatsPager);
 
         //setup user charts view pager
-        vpUserStatsPagerAdapter = new CustomStatsPagerAdapter(this, Constants.VIEW_PAGER_USER_STAT);
+        vpUserStatsPagerAdapter = new CustomStatsPagerAdapter(getContext(), Constants.VIEW_PAGER_USER_STAT);
         vpUserStatsPager.setAdapter(vpUserStatsPagerAdapter);
         inkPageIndicatorUser.setViewPager(vpUserStatsPager);
 
@@ -68,16 +83,16 @@ public class StatsActivity extends AppCompatActivity{
         fabStartRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), TrackActivity.class);
+                Intent intent = new Intent(getContext(), TrackActivity.class);
                 startActivityForResult(intent, 1);
             }
         });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
-            if (resultCode == RESULT_OK && requestCode == 1) {
+            if (resultCode == getActivity().RESULT_OK && requestCode == 1) {
                 Run run = Parcels.unwrap(data.getParcelableExtra("run"));
                 if (run != null && run.getDistance() != 0 && run.getCalories() != 0) {
 
