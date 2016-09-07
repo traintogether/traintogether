@@ -119,6 +119,8 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
     Handler handler = new Handler();
 
 
+    boolean marthonRun = false;
+
     private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     private DatabaseReference mFirebaseDatabaseReference;
@@ -653,9 +655,15 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
             setResult(RESULT_OK, intent);
         } else {
             setResult(Constants.RESULT_NO_USER, null);
-        }
-        finish();
 
+        }
+
+        fabPause.setVisibility(View.GONE);
+        fabStop.setVisibility(View.GONE);
+        if(marthonRun){
+            Intent finisherIntent = new Intent(this, MainActivity.class);
+            startActivity(finisherIntent);
+        }
     }
 
     @Override
