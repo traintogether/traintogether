@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFF"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ivPoster"
+            android:layout_width="match_parent"
+            android:layout_height="175dp"
+            android:scaleType="centerCrop" />
+
+        <View
+            android:id="@+id/bgOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_alignBottom="@+id/ivPoster"
+            android:layout_alignParentBottom="true"
+            android:background="@color/overlay" />
+
+
+        <TextView
+            android:id="@+id/tvTitle"
+            fontPath="fonts/roboto_medium.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:layout_alignTop="@id/bgOverlay"
+            android:layout_margin="1dp"
+            android:gravity="center"
+            android:text="Hello"
+            android:textColor="@color/overlay_text"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_alignStart="@+id/bgOverlay"
+            android:layout_alignLeft="@+id/bgOverlay"
+            tools:ignore="MissingPrefix" />
+
+        <ImageView
+            android:id="@+id/ivLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_below="@+id/tvTitle"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_room_black_24dp" />
+
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvTime"
+            android:layout_toRightOf="@+id/ivLocation"
+            android:paddingTop="4dp"
+            android:ellipsize="end"
+            fontPath="fonts/roboto_light.ttf"
+            android:text="TextView"
+            android:textColor="@color/overlay_text"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="3dp"
+            android:paddingTop="5dp"
+            android:layout_alignTop="@id/bgOverlay"
+            android:ellipsize="end"
+            android:text="TextView"
+            android:layout_alignBottom="@+id/tvTitle"
+            fontPath="fonts/roboto_light.ttf"
+            android:textColor="@color/overlay_text"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/ivCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvTitle"
+            android:layout_toLeftOf="@+id/tvCalendar"
+            android:background="@null"
+            android:src="@drawable/ic_calendar_24dp" />
+
+        <TextView
+            android:id="@+id/tvCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@+id/tvTitle"
+            android:ellipsize="end"
+            android:layout_alignParentRight="true"
+            fontPath="fonts/roboto_light.ttf"
+            android:text="TextView"
+            android:paddingTop="4dp"
+            android:paddingRight="3dp"
+            android:textColor="@color/overlay_text"
+            android:textSize="15sp" />
+
+        <ImageButton
+            android:id="@+id/ibJoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@null"
+            android:src="@drawable/ic_favorite_border_black_24dp" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp"
+    android:background="@color/colorBackgroundDark">
+
+    <FrameLayout
+        android:id="@+id/flArcStack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lcUser"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            />
+    </FrameLayout>
+
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/fabShare"
+        android:theme="@style/ShareButtonTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        app:fabGravity="bottom_end"
+        app:fabDrawable="@drawable/ic_share_24dp"
+        app:fabMenu="@menu/share_menu"
+        app:fabBackgroundTint="@color/colorBackgroundDark"
+        app:miniFabBackgroundTint="@android:color/white"
+        app:miniFabDrawableTint="@color/com_facebook_blue"
+        app:miniFabTitleTextColor="@color/com_facebook_blue"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

@@ -68,5 +68,6 @@
     </string-array>
     <string name="title_activity_schedule">ScheduleActivity</string>
     <string name="secret_maps_api_key">AIzaSyAyK2iYheF8A8XvvF0XG3G6oWqnDBBI57w</string>
+    <string name="congratulations">Congratulations on finishing your marathon!</string>
 
 </resources>
