@@ -258,11 +258,27 @@ public class CustomStatsPagerAdapter extends PagerAdapter {
         LineChart lcUser = (LineChart) view.findViewById(R.id.lcUser);
         ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
 
-        for (int i = 0; i < 3; i++) {
-            LineDataSet set = setDataSet();
-            set.setColor(mStartColors[i]);
-            dataSets.add(set); // add the datasets
-        }
+        LineDataSet set = setDataSet(10, 18, 14);
+        set.setColor(Color.parseColor("#4885ed"));
+        dataSets.add(set); // add the datasets
+
+         set = setDataSet(14, 20, 21);
+        set.setColor(Color.parseColor("#db3236"));
+        dataSets.add(set); // add the datasets
+
+         set = setDataSet(29, 26, 20);
+        set.setColor(Color.parseColor("#f4c20d"));
+        dataSets.add(set); // add the datasets
+
+        set = setDataSet(23, 31, 24);
+        set.setColor(Color.parseColor("#3cba54"));
+        dataSets.add(set); // add the datasets
+
+//        for (int i = 0; i < 3; i++) {
+//            LineDataSet set = setDataSet(10, 20, 30);
+//            set.setColor(mStartColors[i]);
+//            dataSets.add(set); // add the datasets
+//        }
         // create a data object with the datasets
         LineData data = new LineData(dataSets);
         // set data
@@ -285,13 +301,28 @@ public class CustomStatsPagerAdapter extends PagerAdapter {
 
     }
 
-    private LineDataSet setDataSet(){
+    private LineDataSet setDataSet(int i1, int i2, int i3){
         ArrayList<Entry> values = new ArrayList<Entry>();
 
-        for (int i = 0; i < 3; i++) {
-            float val = (float) (Math.random() * 20) + 3;
-            values.add(new Entry(i, val));
-        }
+//        float val = (float) (i1 * 20) + 3;
+//        values.add(new Entry(0, val));
+//
+//         val = (float) (i2 * 20) + 3;
+//        values.add(new Entry(0, val));
+//         val = (float) (i3 * 20) + 3;
+//        values.add(new Entry(0, val));
+
+//        for (int i = 0; i < 3; i++) {
+//            float val = (float) (Math.random() * 20) + 3;
+//            Log.i("SANTOSH", "i: "+i + " val:"+ val);
+//            values.add(new Entry(i, val));
+//        }
+
+        values.add(new Entry(0, i1));
+        values.add(new Entry(1, i2));
+        values.add(new Entry(2, i3));
+
+
         LineDataSet set1;
 
         set1 = new LineDataSet(values, "DataSet 1");
