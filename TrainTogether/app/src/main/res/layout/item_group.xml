@@ -5,30 +5,32 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFF"
+        android:background="#DCEDC8"
+        android:backgroundTint="#DCEDC8"
+        android:padding="10dp"
+        android:layout_margin="10dp"
         card_view:cardCornerRadius="4dp">
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+        android:padding="10dp"
+
+        android:orientation="vertical">
         <TextView
-                android:id="@+id/tvGroupId"
+                android:id="@+id/tvGroupDetails"
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="group id"/>
-        <TextView
-                android:id="@+id/tvUserNames"
+                android:text="group id"
+                android:textSize="16sp"/>
+
+        <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvGroupId"
-                android:layout_marginTop="10dp"
-                android:text="users"/>
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_add_to_photos_black_24dp"
+                android:src="@drawable/ic_add_to_photos_black_24dp"
+                android:layout_below="@+id/tvGroupDetails"
                 android:text="Join"
+            android:padding="10dp"
                 android:id="@+id/btnJoin"
                 android:textAllCaps="false"
                 android:layout_alignParentRight="true"/>

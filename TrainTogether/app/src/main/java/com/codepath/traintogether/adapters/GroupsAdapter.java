@@ -1,24 +1,24 @@
 package com.codepath.traintogether.adapters;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.models.Group;
-import com.codepath.traintogether.models.Request;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.utils.Constants;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.models.Group;
+import com.codepath.traintogether.models.Request;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -42,23 +42,33 @@ public class GroupsAdapter extends ArrayAdapter<Group> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_group, parent, false);
         }
         // Lookup view for data population
-        TextView tvUserNames = (TextView) convertView.findViewById(R.id.tvUserNames);
-        TextView tvGroupId = (TextView) convertView.findViewById(R.id.tvGroupId);
-        Button btnJoin = (Button) convertView.findViewById(R.id.btnJoin);
+        TextView tvGroupDetails = (TextView) convertView.findViewById(R.id.tvGroupDetails);
+        ImageView btnJoin = (ImageView) convertView.findViewById(R.id.btnJoin);
 
         StringBuilder sb = new StringBuilder();
         mAuth = FirebaseAuth.getInstance();
         loggedUser = mAuth.getCurrentUser();
-        for(User user: group.users){
-            sb.append(user.getEmailId()).append("\n");
+        for(int i =0 ; i < group.users.size(); i++){
+            User user = group.users.get(i);
+            if(user.getDisplayName() == null){
+                sb.append("Matt");
+            }else {
+                sb.append(user.getDisplayName());
+            }
             //current user cannot join himslef to a group
             if(user.getEmailId() == loggedUser.getEmail()){
                 btnJoin.setEnabled(false);
             }
+            if(group.users.size() > 1 && i == 0){
+                sb.append(" and ");
+            }else if(group.users.size() > 1 && i == 1){
+                sb.append(" are runnning together");
+            }else if(group.users.size() == 1){
+                sb.append(" is interested in this marathon.");
+            }
         }
 
-        tvGroupId.setText(group.getKey());
-        tvUserNames.setText(sb);
+        tvGroupDetails.setText(sb);
 
         Log.i(TAG, "group key: " + group.getKey());
 
@@ -84,6 +94,9 @@ public class GroupsAdapter extends ArrayAdapter<Group> {
 //                mFirebaseDatabaseReference.child(Constants.GROUPS_CHILD).child(group.getKey()).setValue(group);
 
                 btnJoin.setEnabled(false);
+//                btnJoin.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Request Sent.", Toast.LENGTH_SHORT).show();
+                btnJoin.setImageResource(R.drawable.ic_add_to_photos_grey);
             }
         });
 
