@@ -184,12 +184,21 @@
             android:layout_toRightOf="@+id/tvCalories"
             android:paddingBottom="8dp"
             android:paddingLeft="10dp"
-
             android:text="KCAL"
             android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:textSize="14sp" />
 
+            <ImageView
+                android:layout_margin="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:src="@drawable/spotify"
+                android:onClick="onClickSpotify"
+                android:id="@+id/ivSpotify"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"/>
 
     </RelativeLayout>
 

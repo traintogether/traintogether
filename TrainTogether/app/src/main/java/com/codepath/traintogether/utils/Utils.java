@@ -43,7 +43,7 @@ public class Utils {
                 put(5.0, "#80ff00");
                 put(6.0, "#bfff00");
 
-                put(7.0, "##ffff");
+                put(7.0, "#ffff00");
                 put(8.0, "#ffbf00");
                 put(9.0, "#ff8000");
                 put(10.0, "#ff4000");
