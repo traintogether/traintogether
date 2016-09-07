@@ -228,7 +228,7 @@ public class MainActivity extends BaseActivity implements FilterSettingsDialogFr
                 startActivity(new Intent(MainActivity.this, LeaderBoardActivity.class));
                 break;
             case R.id.nav_stats:
-                viewPager.setAdapter(adapter);
+                startActivity(new Intent(MainActivity.this, StatsActivity.class));
                 break;
 
             case R.id.nav_preference:
