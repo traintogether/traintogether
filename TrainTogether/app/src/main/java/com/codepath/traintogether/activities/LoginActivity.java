@@ -1,25 +1,5 @@
 package com.codepath.traintogether.activities;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.TrainTogetherApplication;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.utils.Constants;
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +12,27 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -42,18 +43,23 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private static final String TAG = "LoginActivity";
 
-    @BindView(R.id.status)
-    TextView mStatusTextView;
-    @BindView(R.id.detail)
-    TextView mDetailTextView;
     @BindView(R.id.button_facebook_login)
     LoginButton btnFacebookLogin;
+
     @BindView(R.id.button_facebook_signout)
     Button btnFacebookSignout;
+
     @BindView(R.id.etEmail)
     EditText etEmail;
+
     @BindView(R.id.etPassword)
     EditText etPassword;
+
+    @BindView(R.id.login_text)
+    TextView tvLoginText;
+
+    @BindView(R.id.btnLogin)
+    Button btnLogin;
 
     public FirebaseUser getUser() {
         return user;
@@ -86,6 +92,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             }
             updateUI(user);
         };
+
+        tvLoginText.setOnClickListener(view -> {
+            if (tvLoginText.getText().toString().equalsIgnoreCase("I prefer email")) {
+                tvLoginText.setText("Nah, I'll use Facebook");
+
+                btnFacebookLogin.setVisibility(View.INVISIBLE);
+                etEmail.setVisibility(View.VISIBLE);
+                etPassword.setVisibility(View.VISIBLE);
+                btnLogin.setVisibility(View.VISIBLE);
+            } else {
+                tvLoginText.setText("I prefer email");
+
+                btnFacebookLogin.setVisibility(View.VISIBLE);
+                etEmail.setVisibility(View.GONE);
+                etPassword.setVisibility(View.GONE);
+                btnLogin.setVisibility(View.GONE);
+            }
+        });
 
         initializeFacebookLogin();
 
@@ -183,22 +207,23 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
-            mStatusTextView.setText(getString(R.string.facebook_status_fmt, user.getDisplayName()));
-            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
 
             btnFacebookLogin.setVisibility(View.GONE);
             btnFacebookSignout.setVisibility(View.VISIBLE);
+
+            tvLoginText.setVisibility(View.GONE);
 
             mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
             addNewUser(user);
 
         } else {
-            mStatusTextView.setText(R.string.signed_out);
-            mDetailTextView.setText(null);
 
             btnFacebookLogin.setVisibility(View.VISIBLE);
             btnFacebookSignout.setVisibility(View.GONE);
+
+            tvLoginText.setVisibility(View.VISIBLE);
+
         }
     }
 
