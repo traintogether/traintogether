@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.codepath.traintogether.activities.FinisherActivity"
+    android:background="@android:color/black"
+    android:backgroundTint="@android:color/black">
+
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <View android:id="@+id/emiter_top_left"
+            android:layout_gravity="top|start"
+            android:layout_marginTop="-20dp"
+            android:layout_width="1dp"
+            android:layout_height="1dp" />
+
+        <View android:id="@+id/emiter_top_right"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="-20dp"
+            android:layout_width="1dp"
+            android:layout_height="1dp" />
+
+        <View android:id="@+id/emiter_top_third"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="-20dp"
+            android:layout_width="1dp"
+            android:layout_height="1dp" />
+
+    </FrameLayout>
+
+
+    <com.romainpiel.shimmer.ShimmerTextView
+        android:id="@+id/tvCongratulations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/congratulations"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_centerInParent="true"
+        android:textSize="40dp"
+        android:gravity="center"
+        android:textStyle="bold|italic"
+        android:fontFamily="serif"
+        app:reflectionColor="#9400d3"
+        android:textColor="@android:color/white"/>
+
+</RelativeLayout>

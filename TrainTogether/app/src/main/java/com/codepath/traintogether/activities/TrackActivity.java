@@ -210,8 +210,14 @@ public class TrackActivity extends AppCompatActivity implements OnDataPointListe
                 unregisterFitnessDataListener(mLocationListener);
                 unregisterFitnessDataListener(mDistanceListener);
                 saveToDB();
+                startFinisherActivity();
             }
         });
+    }
+
+    private void startFinisherActivity() {
+        Intent finisherIntent = new Intent(this, FinisherActivity.class);
+        startActivity(finisherIntent);
     }
 
     // TODO Build IconGenerator

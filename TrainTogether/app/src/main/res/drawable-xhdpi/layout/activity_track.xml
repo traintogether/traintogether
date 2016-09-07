@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackgroundDark"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.codepath.traintogether.activities.TrackActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="20dp"
+            tools:context="com.example.mapdemo.MapsActivity" />
+
+        <ImageView
+            android:id="@+id/ivStopWatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tvTime"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/map"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/stopwatch2" />
+
+        <Chronometer
+            android:id="@+id/tvTime"
+            fontPath="fonts/roboto_thin.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/map"
+            android:layout_toRightOf="@+id/ivStopWatch"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="44sp" />
+
+
+        <TextView
+            android:id="@+id/tvTimeHHMMSS"
+            fontPath="fonts/roboto_thin.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tvTime"
+            android:layout_toRightOf="@+id/tvTime"
+            android:paddingBottom="8dp"
+            android:paddingLeft="2dp"
+            android:text="sec"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+
+        <ImageView
+            android:id="@+id/ivSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tvDist"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/tvDist"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/distance" />
+
+        <TextView
+            android:id="@+id/tvDist"
+            fontPath="fonts/roboto_thin.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vHSep"
+            android:layout_toRightOf="@+id/ivSpeed"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:text="0.00"
+            android:textColor="@android:color/white"
+            android:textSize="44sp" />
+
+        <TextView
+            android:id="@+id/tvDistMPS"
+            fontPath="fonts/roboto_thin.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tvDist"
+            android:layout_toRightOf="@+id/tvDist"
+            android:paddingBottom="8dp"
+            android:paddingLeft="5dp"
+            android:text="miles"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <View
+            android:id="@+id/vHSep"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvPace"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:background="#0EE0E0E0"></View>
+
+        <ImageView
+            android:id="@+id/ivDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tvTime"
+            android:layout_below="@+id/map"
+            android:layout_toRightOf="@+id/tvTimeHHMMSS"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:src="@drawable/speedometer" />
+
+        <TextView
+            android:id="@+id/tvPace"
+            fontPath="fonts/roboto_thin.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/map"
+            android:layout_toRightOf="@+id/ivDistance"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:text="0.0"
+            android:textColor="@android:color/white"
+            android:textSize="44sp" />
+
+        <TextView
+            android:id="@+id/tvPaceMile"
+            fontPath="fonts/roboto_thin.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tvTime"
+            android:layout_toRightOf="@+id/tvPace"
+            android:paddingBottom="8dp"
+            android:paddingLeft="10dp"
+            android:text="mph"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+
+        <ImageView
+            android:id="@+id/ivCalories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tvCalories"
+            android:layout_below="@+id/vHSep"
+            android:layout_toRightOf="@+id/tvTimeHHMMSS"
+            android:paddingLeft="20dp"
+            android:paddingTop="15dp"
+
+            android:src="@drawable/calories" />
+
+        <TextView
+            android:id="@+id/tvCalories"
+            fontPath="fonts/roboto_thin.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vHSep"
+            android:layout_toRightOf="@+id/ivCalories"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:text="0"
+            android:textColor="@android:color/white"
+            android:textSize="44sp" />
+
+        <TextView
+            android:id="@+id/tvCalKCAL"
+            fontPath="fonts/roboto_thin.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tvCalories"
+            android:layout_toRightOf="@+id/tvCalories"
+            android:paddingBottom="8dp"
+            android:paddingLeft="10dp"
+            android:text="KCAL"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+            <ImageView
+                android:layout_margin="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:src="@drawable/spotify"
+                android:onClick="onClickSpotify"
+                android:id="@+id/ivSpotify"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"/>
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/dual_fab_margin"
+        android:padding="10dp"
+        android:src="@drawable/ic_pause_24dp"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="@dimen/dual_fab_margin"
+        android:padding="10dp"
+        android:src="@drawable/ic_stop_24dp" />
+
+</android.support.design.widget.CoordinatorLayout>

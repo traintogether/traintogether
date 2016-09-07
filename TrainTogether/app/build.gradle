@@ -111,6 +111,12 @@ dependencies {
 
     //spotify
     compile project(':spotifysdk-1.0.0-beta4')
+
+    //shimmer
+    compile 'com.romainpiel.shimmer:library:1.4.0@aar'
+
+    //leonids
+    compile 'com.plattysoft.leonids:LeonidsLib:1.3.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
