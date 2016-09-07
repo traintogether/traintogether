@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="0dp"
-    android:background="@android:color/white">
+    android:background="@color/colorBackgroundDark">
 
     <FrameLayout
         android:id="@+id/flArcStack"
@@ -24,7 +24,6 @@
         android:theme="@style/ShareButtonTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_gravity="bottom|right"
         app:fabGravity="bottom_end"
         app:fabDrawable="@drawable/ic_share_24dp"
