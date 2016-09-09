@@ -1,21 +1,5 @@
 package com.codepath.traintogether.adapters;
 
-import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.TextView;
-
-import com.codepath.traintogether.R;
-import com.codepath.traintogether.TrainTogetherApplication;
-import com.codepath.traintogether.models.Group;
-import com.codepath.traintogether.models.Request;
-import com.codepath.traintogether.models.User;
-import com.codepath.traintogether.utils.Constants;
-import com.codepath.traintogether.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -26,6 +10,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import com.codepath.traintogether.R;
+import com.codepath.traintogether.TrainTogetherApplication;
+import com.codepath.traintogether.models.Group;
+import com.codepath.traintogether.models.Request;
+import com.codepath.traintogether.models.User;
+import com.codepath.traintogether.utils.Constants;
+
+import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.TextView;
+
 import java.util.List;
 
 public class RequestsAdapter extends ArrayAdapter<Request> {
@@ -34,7 +34,6 @@ public class RequestsAdapter extends ArrayAdapter<Request> {
     private DatabaseReference mFirebaseDatabaseReference;
     private FirebaseUser loggedUser;
     private FirebaseAuth mAuth;
-    String[] names = new String[]{"Carley", "Adrien", "Adisson","Adlai","Ado","Adonia","Adria","Adrian","Adrie","Adrien","Adya","Aeriel"};
 
     public RequestsAdapter(Context context, List<Request> requests) {
         super(context, 0, requests);
@@ -50,13 +49,15 @@ public class RequestsAdapter extends ArrayAdapter<Request> {
         }
         // Lookup view for data population
         TextView tvFromRequestId = (TextView) convertView.findViewById(R.id.tvFromRequestId);
+        TextView tvGroupId = (TextView) convertView.findViewById(R.id.tvGroupId);
         Button btnJoin = (Button) convertView.findViewById(R.id.btnJoin);
 
         StringBuilder sb = new StringBuilder();
         mAuth = FirebaseAuth.getInstance();
         loggedUser = mAuth.getCurrentUser();
 
-        tvFromRequestId.setText(names[Utils.randomWithRange(0, names.length-1)] + " is requesting to join.");
+        tvFromRequestId.setText(request.getFromId());
+        tvGroupId.setText(request.getGroupKey());
 
         // Populate the data into the template view using the data object
 
